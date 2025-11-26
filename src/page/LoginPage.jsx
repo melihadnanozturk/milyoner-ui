@@ -1,9 +1,15 @@
-import {Card, Container} from "@mui/material";
+import {Container, Paper, Typography} from "@mui/material";
+import LoginForm from "../component/LoginForm.jsx";
 
 function LoginPage() {
     return (
         <Container maxWidth={"md"}>
-        <Card variant="outlined">Merhaba Login Page</Card>
+            <Paper sx={{padding: 2, backgroundColor: 'white'}}>
+                <Typography variant="h4" align="center" sx={{fontWeight: "bold", mb: 3, mt: 3}}>Milyoner'e Hoşgeldiniz
+                    :)</Typography>
+                <LoginForm/>
+
+            </Paper>
         </Container>
     )
 }
