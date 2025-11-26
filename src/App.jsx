@@ -1,6 +1,8 @@
 import './App.css'
 import {createBrowserRouter, RouterProvider} from "react-router";
 import LoginPage from "./page/LoginPage.jsx";
+import GamePage from "./page/GamePage.jsx";
+import ResultPage from "./page/ResultPage.jsx";
 
 
 const router = createBrowserRouter([
