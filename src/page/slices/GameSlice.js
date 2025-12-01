@@ -12,15 +12,17 @@ const initialState = {
 
 export const fetchNextQuestion = createAsyncThunk("game/nextQuestion", async (body) => {
     const response = await request.gameplay.getQuestion(body);
-
     return response;
 })
 
 export const fetchStartGame = createAsyncThunk("game/startGame", async (body) => {
     const response = await request.gameplay.startGame(body);
-
     return response;
+})
 
+export const fetchSetAnswer = createAsyncThunk("game/setAnswer", async (body) => {
+    const response = await request.gameplay.setAnswer(body);
+    return response;
 })
 
 export const gameSlice = createSlice({
@@ -51,6 +53,15 @@ export const gameSlice = createSlice({
             console.log("question", action.payload.data.question);
             state.question = action.payload.data.question;
         }).addCase(fetchNextQuestion.rejected, (state, action) => {
+            state.loading = false;
+            state.error = "Beklenmeyen bir hata oluştu " + action.error.message;
+        }).addCase(fetchSetAnswer.pending, (state, action) => {
+            state.loading = true;
+        }).addCase(fetchSetAnswer.fulfilled, (state, action) => {
+            state.loading = false;
+            console.log("fetchSetAnswer_ACTION : ",action);
+            state.gameState = action.payload.gameState;
+        }).addCase(fetchSetAnswer.rejected, (state, action) => {
             state.loading = false;
             state.error = "Beklenmeyen bir hata oluştu " + action.error.message;
         })

@@ -101,7 +101,7 @@ function GamePage() {
 
                 <Box>
                     {selection ? (<>
-                        <Button variant="contained" sx={{mr: 5}}>Son Kararım </Button>
+                        <Button variant="contained" sx={{mr: 5}} onClick={handleConfirmAnswer}>Son Kararım </Button>
                         <Button variant="contained" color="error" onClick={() => setSelection(null)}>Biraz daha
                             düşüneceğim </Button>
                     </>) : <></>}
