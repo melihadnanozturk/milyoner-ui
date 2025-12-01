@@ -1,23 +1,16 @@
 import {Box, Button, Container, Grid, Paper, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchNextQuestion} from "./slices/GameSlice";
+import {fetchNextQuestion, fetchSetAnswer} from "./slices/GameSlice";
+import {useNavigate} from "react-router";
 
 function GamePage() {
-    const {question, gameId, playerId} = useSelector((state) => state.game);
+    const {question, gameId, playerId, gameState} = useSelector((state) => state.game);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
 
     const [selection, setSelection] = useState(null);
-
-    const questionData = {
-        text: "React kütüphanesini kim geliştirmiştir?",
-        options: [
-            {id: 1, label: "A", text: "Google"},
-            {id: 2, label: "B", text: "Facebook (Meta)"},
-            {id: 3, label: "C", text: "Microsoft"},
-            {id: 4, label: "D", text: "Twitter"}
-        ]
-    };
 
     useEffect(() => {
 
@@ -29,8 +22,42 @@ function GamePage() {
         dispatch(fetchNextQuestion(body));
     }, [dispatch]);
 
-    const handleClick = () => {
-        console.log("HANDLE_CLICK")
+    const handleConfirmAnswer = async () => {
+        // todo : olsa ne olmasa ne ? ;
+        // if (!selection) return;
+        const body = {
+            gameId: gameId,
+            playerId: playerId,
+            questionId: question.questionId,
+            answerId: selection.id,
+        }
+
+        try {
+            const result = await dispatch(fetchSetAnswer(body)).unwrap();
+            console.log("CEVAP_GELDI : ",result.data);
+
+            if (result.data.gameState === "IN_PROGRESS") {
+                setSelection(null);
+
+                const nextQuestionBody = {
+                    gameId: gameId,
+                    playerId: playerId
+                }
+
+                dispatch(fetchNextQuestion(nextQuestionBody))
+            } else if (result.data.gameState === "WON") {
+                alert("Tebrikler! Oyunu KAZANDINIZ! 🏆");
+                navigate("/");
+            } else if (result.data.gameState === "LOST") {
+                alert("Üzgünüm, yanlış cevap. KAYBETTİNİZ. ❌");
+                navigate("/");
+            }
+
+
+        } catch (error) {
+            console.error("Hata oluştu:", error);
+            alert("Sunucu ile iletişimde bir sorun oluştu.");
+        }
     }
 
     return (

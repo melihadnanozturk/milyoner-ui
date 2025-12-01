@@ -3,7 +3,7 @@ import request from "../../api/apiClient.js";
 
 const initialState = {
     //burada ilk başta nasıl null olarak vereceğiz, bunun kontrolunu sağlamak lazım
-    game_state: null,
+    gameState: null,
     gameId: null,
     playerId: null,
     question: null,
@@ -39,7 +39,7 @@ export const gameSlice = createSlice({
             state.loading = false;
             state.gameId = action.payload.data.gameId;
             state.playerId = action.payload.data.playerId;
-            state.game_state = action.payload.data.gameState;
+            state.gameState = action.payload.data.gameState;
         }).addCase(fetchStartGame.rejected, (state, action) => {
             state.loading = false;
             state.error = "Beklenmeyen bir hata oluştu " + action.error.message;
