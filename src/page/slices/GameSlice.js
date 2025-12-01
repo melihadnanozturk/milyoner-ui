@@ -25,6 +25,11 @@ export const fetchSetAnswer = createAsyncThunk("game/setAnswer", async (body) =>
     return response;
 })
 
+export const fetchGetResult = createAsyncThunk("game/getResult", async (body) => {
+    const response = await request.gameplay.getResult(body);
+    return response;
+})
+
 export const gameSlice = createSlice({
     name: 'game',
     initialState,

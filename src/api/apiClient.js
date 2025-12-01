@@ -14,7 +14,7 @@ const gameplay = {
     startGame: (username) => methods.post("game/start", username),
     getQuestion: (body) => methods.post("game/questions", body),
     setAnswer: (body) => methods.post("game/answer", body),
-    getResult: (body) => methods.get("game/result", body),
+    getResult: (body) => methods.post("game/result", body),
 }
 
 const request = {
