@@ -2,14 +2,28 @@ import Form from "./Form.jsx";
 import {Button, Paper, Stack, TextField, Typography} from "@mui/material";
 import {useForm} from "react-hook-form";
 import {useNavigate} from "react-router";
+import {useDispatch} from "react-redux";
+import {fetchStartGame} from "../page/slices/GameSlice.js";
 
 function LoginForm() {
+    const dispatch = useDispatch();
 
     const navigate = useNavigate();
 
     const handleClickButton = async (data) => {
-        console.log(data);
-        navigate("/game");
+
+        console.log("DATA : ", data);
+
+        const body = {
+            username: data.username
+        }
+        try {
+            //burada hata olabilir
+            await dispatch(fetchStartGame(body)).unwrap();
+            navigate("/game");
+        } catch (error) {
+            alert("INTERNAL_SERVER_ERROR :: " + error.message)
+        }
     }
 
     const {

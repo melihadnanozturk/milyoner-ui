@@ -1,10 +1,10 @@
 import {Box, Button, Container, Grid, Paper, Typography} from "@mui/material";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import setQuestion from "./slices/GameSlice";
+import {fetchNextQuestion} from "./slices/GameSlice";
 
 function GamePage() {
-    const question = useSelector((state) => state.game.question);
+    const {question, gameId, playerId} = useSelector((state) => state.game);
     const dispatch = useDispatch();
 
     const [selection, setSelection] = useState(null);
@@ -19,20 +19,32 @@ function GamePage() {
         ]
     };
 
+    useEffect(() => {
+
+        const body = {
+            gameId: gameId,
+            playerId: playerId
+        }
+
+        dispatch(fetchNextQuestion(body));
+    }, [dispatch]);
+
+    const handleClick = () => {
+        console.log("HANDLE_CLICK")
+    }
+
     return (
         <Container maxWidth="md" sx={{mt: 5}}>
             <Paper elevation={3} sx={{padding: 4, borderRadius: 2}}>
                 <Box sx={{p: 5}}>
                     <Typography variant="h5" align="center" fontWeight="bold">
-                        {question}
+                        {question?.questionText}
                     </Typography>
-                    <Button variant="contained" sx={{mr: 5}} onClick={() => dispatch(setQuestion("Soruyu degistirdim :)"))}>Change
-                        Question </Button>
 
                 </Box>
                 <Box sx={{pb: 5}}>
                     <Grid container spacing={2}>
-                        {questionData.options.map((option) => (
+                        {question?.answers.map((option) => (
                             <Grid
                                 item
                                 xs={6}  // Mobilde 2 sütun
@@ -53,8 +65,7 @@ function GamePage() {
                                         px: 3,
                                         fontSize: '1.1rem'
                                     }}
-                                >
-                                    <b style={{marginRight: '10px'}}>{option.label})</b> {option.text}
+                                >{option.text}
                                 </Button>
                             </Grid>
                         ))}
