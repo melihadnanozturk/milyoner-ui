@@ -51,6 +51,8 @@ export const gameSlice = createSlice({
             state.gameState = action.payload.gameState;
         }).addCase(fetchGetResult.fulfilled, (state, action) => {
             //burada bir hata olabilir !!
+            console.log("fetchGetResult",action.payload.data);
+            console.log("REDUX_STATE",state);
             state.result = action.payload.data;
         })
             .addMatcher(isPending, (state) => {
