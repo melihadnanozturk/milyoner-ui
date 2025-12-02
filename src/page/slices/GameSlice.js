@@ -1,4 +1,4 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, isPending, isRejected,isFulfilled} from "@reduxjs/toolkit";
 import request from "../../api/apiClient.js";
 
 const initialState = {
@@ -7,7 +7,8 @@ const initialState = {
     gameId: null,
     playerId: null,
     question: null,
-    loading: false, error: null
+    loading: false, error: null,
+    result: null
 }
 
 export const fetchNextQuestion = createAsyncThunk("game/nextQuestion", async (body) => {
@@ -40,38 +41,30 @@ export const gameSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchStartGame.pending, (state) => {
-            state.loading = true;
-        }).addCase(fetchStartGame.fulfilled, (state, action) => {
-            state.loading = false;
+        builder.addCase(fetchStartGame.fulfilled, (state, action) => {
             state.gameId = action.payload.data.gameId;
             state.playerId = action.payload.data.playerId;
             state.gameState = action.payload.data.gameState;
-        }).addCase(fetchStartGame.rejected, (state, action) => {
-            state.loading = false;
-            state.error = "Beklenmeyen bir hata oluştu " + action.error.message;
-        }).addCase(fetchNextQuestion.pending, (state) => {
-            state.loading = true;
         }).addCase(fetchNextQuestion.fulfilled, (state, action) => {
-            state.loading = false;
-            console.log("getQuestion", action.payload);
-            console.log("question", action.payload.data.question);
             state.question = action.payload.data.question;
-        }).addCase(fetchNextQuestion.rejected, (state, action) => {
-            state.loading = false;
-            state.error = "Beklenmeyen bir hata oluştu " + action.error.message;
-        }).addCase(fetchSetAnswer.pending, (state, action) => {
-            state.loading = true;
         }).addCase(fetchSetAnswer.fulfilled, (state, action) => {
-            state.loading = false;
-            console.log("fetchSetAnswer_ACTION : ",action);
             state.gameState = action.payload.gameState;
-        }).addCase(fetchSetAnswer.rejected, (state, action) => {
-            state.loading = false;
-            state.error = "Beklenmeyen bir hata oluştu " + action.error.message;
+        }).addCase(fetchGetResult.fulfilled, (state, action) => {
+            //burada bir hata olabilir !!
+            state.result = action.payload.data;
         })
+            .addMatcher(isPending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addMatcher(isRejected, (state, action) => {
+                state.loading = false;
+                state.error = "Beklenmeyen bir hata oluştu " + (action.error.message || "Bilinmiyor");
+            })
+            .addMatcher(isFulfilled, (state) => {
+                state.loading = false;
+            })
     }
-
 })
 
 export const {setQuestion} = gameSlice.actions
