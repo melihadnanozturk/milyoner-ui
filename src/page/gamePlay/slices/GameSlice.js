@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, isPending, isRejected,isFulfilled} from "@reduxjs/toolkit";
-import request from "../../api/apiClient.js";
+import request from "../../../api/apiClient.js";
 
 const tokenFromStorage = localStorage.getItem("accessToken");
 
@@ -39,12 +39,6 @@ export const fetchGetResult = createAsyncThunk("game/getResult", async (body) =>
 export const gameSlice = createSlice({
     name: 'game',
     initialState,
-    reducers: {
-        setQuestion: (state, action) => {
-            console.log("SLICE_ICERISDE_DISPATCH _YAPILDI")
-            state.question = action.payload;
-        }
-    },
     extraReducers: (builder) => {
         builder.addCase(fetchStartGame.fulfilled, (state, action) => {
             state.token = action.payload.data.token;
@@ -73,7 +67,5 @@ export const gameSlice = createSlice({
             })
     }
 })
-
-export const {setQuestion} = gameSlice.actions
 
 export default gameSlice.reducer

@@ -1,14 +1,19 @@
 import './App.css'
 import {createBrowserRouter, RouterProvider} from "react-router";
-import LoginPage from "./page/LoginPage.jsx";
-import GamePage from "./page/GamePage.jsx";
-import ResultPage from "./page/ResultPage.jsx";
+import StartGamePage from "./page/gamePlay/StartGamePage.jsx";
+import GamePage from "./page/gamePlay/GamePage.jsx";
+import ResultPage from "./page/gamePlay/ResultPage.jsx";
+import AdminLoginForm from "./component/AdminLoginForm.jsx";
 
 
 const router = createBrowserRouter([
-    {path: "/", element: <LoginPage/>},
+    {path: "/", element: <StartGamePage/>},
     {path: "/game", element: <GamePage/>},
-    {path: "/result", element: <ResultPage/>}
+    {path: "/result", element: <ResultPage/>},
+    {path: "/admin", children:[
+            {index: true, element: <AdminLoginForm/>},
+        ]},
+
 ])
 
 function App() {

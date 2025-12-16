@@ -11,15 +11,12 @@ export const setStore = (storeInstance) => {
 
 const isAuthExcluded = (config) => {
     // Per-request override: axios.get(url, { skipAuth: true })
-    console.log("isAuthExcluded", config);
-
     if (config?.skipAuth === true) return true;
 }
 
 axios.interceptors.request.use(
     (config) => {
         if (isAuthExcluded(config)) {
-            console.log("AUTH_SKIPPED");
             if (config?.headers?.Authorization) {
                 delete config.headers.Authorization;
             }

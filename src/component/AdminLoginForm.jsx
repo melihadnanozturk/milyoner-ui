@@ -3,9 +3,11 @@ import {Button, Paper, Stack, TextField, Typography} from "@mui/material";
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
 import {fetchAdminLogin} from "../page/panel/slice/AdminAuthSlice.js";
+import {useNavigate} from "react-router";
 
 function AdminLoginForm() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleClickButton = async (data) => {
         const body = {
@@ -14,7 +16,8 @@ function AdminLoginForm() {
         }
         try {
             //burada hata olabilir
-            await dispatch(fetchAdminLogin(body)).unwrap();
+            const result = await dispatch(fetchAdminLogin(body)).unwrap();
+            if (result) navigate("/admin/panel");
         } catch (error) {
             alert("INTERNAL_SERVER_ERROR :: " + error.message)
         }

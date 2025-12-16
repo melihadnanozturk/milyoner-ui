@@ -1,4 +1,4 @@
-import GamePaper from "../component/Paper.jsx";
+import GamePaper from "../../component/Paper.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {Box, Button, Grid, Typography} from "@mui/material";
 import {fetchGetResult} from "./slices/GameSlice.js";

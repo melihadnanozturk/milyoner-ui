@@ -1,9 +1,9 @@
 import {Box, Button, Grid, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchNextQuestion, fetchSetAnswer} from "./slices/GameSlice";
+import {fetchNextQuestion, fetchSetAnswer} from "./slices/GameSlice.js";
 import {useNavigate} from "react-router";
-import GamePaper from "../component/Paper.jsx";
+import GamePaper from "../../component/Paper.jsx";
 
 function GamePage() {
     const {question, gameState} = useSelector((state) => state.game);

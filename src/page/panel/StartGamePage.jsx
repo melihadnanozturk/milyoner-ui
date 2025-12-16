@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 function StartGamePage() {
     return (
         <Container maxWidth={"md"}>
-            <LoginForm/>
+            <AdminLoginForm/>
         </Container>
     )
 }
