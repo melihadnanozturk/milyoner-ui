@@ -6,7 +6,7 @@ import {useNavigate} from "react-router";
 import GamePaper from "../component/Paper.jsx";
 
 function GamePage() {
-    const {question, gameId, playerId, gameState} = useSelector((state) => state.game);
+    const {question, gameState} = useSelector((state) => state.game);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -15,20 +15,13 @@ function GamePage() {
 
     useEffect(() => {
 
-        const body = {
-            gameId: gameId,
-            playerId: playerId
-        }
-
-        dispatch(fetchNextQuestion(body));
+        dispatch(fetchNextQuestion());
     }, [dispatch]);
 
     const handleConfirmAnswer = async () => {
         // todo : olsa ne olmasa ne ? ;
         // if (!selection) return;
         const body = {
-            gameId: gameId,
-            playerId: playerId,
             questionId: question.questionId,
             answerId: selection.id,
         }
@@ -40,12 +33,7 @@ function GamePage() {
             if (result.data.gameState === "IN_PROGRESS") {
                 setSelection(null);
 
-                const nextQuestionBody = {
-                    gameId: gameId,
-                    playerId: playerId
-                }
-
-                dispatch(fetchNextQuestion(nextQuestionBody))
+                dispatch(fetchNextQuestion())
             } else if (result.data.gameState === "WON") {
                 alert("Tebrikler! Oyunu KAZANDINIZ! 🏆");
                 navigate("/result");

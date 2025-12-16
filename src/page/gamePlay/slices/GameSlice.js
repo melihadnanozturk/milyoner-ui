@@ -1,23 +1,28 @@
 import {createAsyncThunk, createSlice, isPending, isRejected,isFulfilled} from "@reduxjs/toolkit";
 import request from "../../api/apiClient.js";
 
+const tokenFromStorage = localStorage.getItem("accessToken");
+
 const initialState = {
     //burada ilk başta nasıl null olarak vereceğiz, bunun kontrolunu sağlamak lazım
     gameState: null,
-    gameId: null,
-    playerId: null,
+    token: tokenFromStorage ? tokenFromStorage : null,
+    isAuthenticated: !!tokenFromStorage,
+    username: null, //todo: burada username yazılması gerekir
     question: null,
     loading: false, error: null,
     result: null
 }
 
-export const fetchNextQuestion = createAsyncThunk("game/nextQuestion", async (body) => {
-    const response = await request.gameplay.getQuestion(body);
+
+//todo: burada yer alan auth işlemlerini ayırabiliriz ?
+export const fetchStartGame = createAsyncThunk("game/startGame", async (body) => {
+    const response = await request.gameplay.startGame(body);
     return response;
 })
 
-export const fetchStartGame = createAsyncThunk("game/startGame", async (body) => {
-    const response = await request.gameplay.startGame(body);
+export const fetchNextQuestion = createAsyncThunk("game/nextQuestion", async (body) => {
+    const response = await request.gameplay.getQuestion(body);
     return response;
 })
 
@@ -42,8 +47,8 @@ export const gameSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchStartGame.fulfilled, (state, action) => {
-            state.gameId = action.payload.data.gameId;
-            state.playerId = action.payload.data.playerId;
+            state.token = action.payload.data.token;
+            localStorage.setItem("accessToken", action.payload.data.token);
             state.gameState = action.payload.data.gameState;
         }).addCase(fetchNextQuestion.fulfilled, (state, action) => {
             state.question = action.payload.data.question;
