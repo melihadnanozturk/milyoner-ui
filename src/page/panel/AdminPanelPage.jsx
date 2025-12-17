@@ -1,11 +1,5 @@
-import {Container} from "@mui/material";
-import AdminLoginForm from "../../component/AdminLoginForm.jsx";
+import AdminPanelLayout from "./AdminPanelLayout.jsx";
 
-function AdminLoginPage() {
-    return (
-        <Container maxWidth={"md"}>
-        </Container>
-    )
+export default function AdminPanelPage() {
+    return (<AdminPanelLayout/>);
 }
-
-export default AdminLoginPage;
