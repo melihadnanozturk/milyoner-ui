@@ -1,9 +1,7 @@
 import {Container} from "@mui/material";
-import LoginForm from "../../component/LoginForm.jsx";
-import {useDispatch, useSelector} from "react-redux";
 import AdminLoginForm from "../../component/AdminLoginForm.jsx";
 
-function StartGamePage() {
+function AdminLoginPage() {
     return (
         <Container maxWidth={"md"}>
             <AdminLoginForm/>
@@ -11,4 +9,4 @@ function StartGamePage() {
     )
 }
 
-export default StartGamePage;
+export default AdminLoginPage;
