@@ -2,6 +2,7 @@
 
 import {createAsyncThunk, createSlice, isPending, isRejected} from "@reduxjs/toolkit";
 import request from "../../../api/apiClient.js";
+import {skipToken} from "@reduxjs/toolkit/query";
 
 export const fetchAdminLogin = createAsyncThunk("panel/auth/login", async (body) => {
     const response = await request.panelAuth.login(body);
@@ -20,7 +21,9 @@ export const adminAuthSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchAdminLogin.fulfilled, (state, action) => {
-            state.token = action.payload;
+            let token = action.payload;
+            state.token = token;
+            localStorage.setItem("adminAccessToken",token)
             state.loading = false;
         })
             .addMatcher(isPending, (state) => {
