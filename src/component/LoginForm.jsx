@@ -3,7 +3,7 @@ import {Button, Paper, Stack, TextField, Typography} from "@mui/material";
 import {useForm} from "react-hook-form";
 import {useNavigate} from "react-router";
 import {useDispatch} from "react-redux";
-import {fetchStartGame} from "../page/gamePlay/slices/GameSlice.js";
+import {fetchStartGame} from "../page/gameplay/slices/GameSlice.js";
 
 function LoginForm() {
     const dispatch = useDispatch();

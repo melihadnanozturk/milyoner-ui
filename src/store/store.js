@@ -1,6 +1,6 @@
 import {configureStore} from "@reduxjs/toolkit";
 import {setStore} from "../api/apiClient.js";
-import gameReducer from "../page/gamePlay/slices/GameSlice";
+import gameReducer from "../page/gameplay/slices/GameSlice";
 import adminAuthReducer from "../page/panel/slice/AdminAuthSlice.js";
 import {panelApi} from "../page/panel/slice/panelApi.js";
 import {setupListeners} from "@reduxjs/toolkit/query";

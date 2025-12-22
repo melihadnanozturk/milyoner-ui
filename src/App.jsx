@@ -1,8 +1,8 @@
 import './App.css'
 import {createBrowserRouter, RouterProvider} from "react-router";
-import StartGamePage from "./page/gamePlay/StartGamePage.jsx";
-import GamePage from "./page/gamePlay/GamePage.jsx";
-import ResultPage from "./page/gamePlay/ResultPage.jsx";
+import StartGamePage from "./page/gameplay/StartGamePage.jsx";
+import GamePage from "./page/gameplay/GamePage.jsx";
+import ResultPage from "./page/gameplay/ResultPage.jsx";
 import AdminLoginPage from "./page/panel/AdminLoginPage.jsx";
 import AdminLayout from "./component/AdminLayout.jsx";
 import AdminPanelLayout from "./page/panel/AdminPanelLayout.jsx";

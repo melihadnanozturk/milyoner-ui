@@ -148,9 +148,10 @@ function AdminPanelLayout() {
             <Box
                 component="main"
                 sx={{
+                    flexGrow: 1,
                     ml: `${sidebarWidth}px`,
-                    width: `calc(100% - ${sidebarWidth}px)`,
-                    p: 3,
+                    width: { sm: `calc(100% - ${sidebarWidth}px)` },
+                    minHeight: '100vh',
                     transition: "width 200ms ease, margin-left 200ms ease",
                 }}
             >
