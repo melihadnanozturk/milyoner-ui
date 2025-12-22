@@ -24,10 +24,11 @@ export default function QuestionPage() {
     }
 
     return (
-        <Box sx={{ width: '100%', overflow: 'hidden', p: { xs: 1, md: 3 } }}>
+        <Box sx={{ width: '100%'}}>
             <TableContainer  component={Paper} sx={{
-                maxHeight: 'calc(100vh - 160px)',
+                maxHeight: 'calc(100vh - 120px)',
                 width: '100%',
+                overflow: 'auto',
                 // Scrollbar Özelleştirme
                 '&::-webkit-scrollbar': {
                     width: '8px',

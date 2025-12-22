@@ -151,12 +151,14 @@ function AdminPanelLayout() {
                     flexGrow: 1,
                     ml: `${sidebarWidth}px`,
                     width: { sm: `calc(100% - ${sidebarWidth}px)` },
-                    minHeight: '100vh',
+                    height: '90vh',
+                    overflow: 'hidden',
                     transition: "width 200ms ease, margin-left 200ms ease",
                 }}
             >
-                <Toolbar/>
-                <Outlet/>
+                <Box sx={{ p: 7, flexGrow: 1 }}>
+                    <Outlet/>
+                </Box>
             </Box>
         </Box>
     );
