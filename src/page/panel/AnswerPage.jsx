@@ -1,3 +1,5 @@
+import CreateAnswerForm from "../../component/admin/CreateAnswerForm.jsx";
+
 export default function AnswerPage() {
-    return <h1>Answer crud işlemleri</h1>
+    return (<CreateAnswerForm/>)
 }

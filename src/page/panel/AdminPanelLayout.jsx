@@ -32,7 +32,8 @@ function AdminPanelLayout() {
     const menuItems = useMemo(
         () => [
             {key: "question", label: "Sorular", to: "/admin/panel", icon: <QuizOutlinedIcon/>},
-            {key: "answer", label: "Cevaplar", to: "/admin/panel/answer", icon: <CheckCircleOutlineIcon/>},
+            //todo : nice to have // change icon :)
+            {key: "createAnswer", label: "Soru Oluştur", to: "/admin/panel/answer", icon: <CheckCircleOutlineIcon/>},
         ],
         []
     );
@@ -150,13 +151,22 @@ function AdminPanelLayout() {
                 sx={{
                     flexGrow: 1,
                     ml: `${sidebarWidth}px`,
-                    width: { sm: `calc(100% - ${sidebarWidth}px)` },
-                    height: '90vh',
-                    overflow: 'hidden',
+                    width: `calc(100% - ${sidebarWidth}px)`,
+                    minHeight: '100vh',
                     transition: "width 200ms ease, margin-left 200ms ease",
+                    display: 'flex',
+                    flexDirection: 'column'
                 }}
             >
-                <Box sx={{ p: 7, flexGrow: 1 }}>
+                <Toolbar /> {/* AppBar için boşluk */}
+
+                <Box sx={{
+                    flexGrow: 1,
+                    p: { xs: 2, sm: 3, md: 4 }, // ✅ Responsive padding
+                    width: '100%',
+                    maxWidth: '100%',
+                    overflow: 'auto'
+                }}>
                     <Outlet/>
                 </Box>
             </Box>

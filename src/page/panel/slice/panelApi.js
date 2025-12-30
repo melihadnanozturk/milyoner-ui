@@ -27,8 +27,16 @@ export const panelApi = createApi({
             }),
             providesTags: (result, error, id) =>
                 [{type: 'Questions', id}],
-        })
+        }),
+        createNewQuestion: builder.mutation({
+            query: (body) => ({
+                url: '/questions/operation',
+                method: 'POST',
+                data: body
+            }),
+            invalidatesTags: [{type: 'Questions', id: 'LIST'}]
+        }),
     })
 })
 
-export const {useGetAllQuestionsQuery, useGetQuestionByIdQuery} = panelApi;
+export const {useGetAllQuestionsQuery, useGetQuestionByIdQuery, useCreateNewQuestionMutation} = panelApi;

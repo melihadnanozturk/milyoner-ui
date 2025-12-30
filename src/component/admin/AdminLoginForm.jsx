@@ -1,4 +1,4 @@
-import Form from "./Form.jsx";
+import Form from "../Form.jsx";
 import {
     Alert,
     Box,
@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
-import {fetchAdminLogin} from "../page/panel/slice/AdminAuthSlice.js";
+import {fetchAdminLogin} from "../../page/panel/slice/AdminAuthSlice.js";
 import {useNavigate} from "react-router";
 import {useState} from "react";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";

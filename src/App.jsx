@@ -4,7 +4,7 @@ import StartGamePage from "./page/gameplay/StartGamePage.jsx";
 import GamePage from "./page/gameplay/GamePage.jsx";
 import ResultPage from "./page/gameplay/ResultPage.jsx";
 import AdminLoginPage from "./page/panel/AdminLoginPage.jsx";
-import AdminLayout from "./component/AdminLayout.jsx";
+import AdminLayout from "./component/admin/AdminLayout.jsx";
 import AdminPanelLayout from "./page/panel/AdminPanelLayout.jsx";
 import QuestionPage from "./page/panel/QuestionPage.jsx";
 import AnswerPage from "./page/panel/AnswerPage.jsx";

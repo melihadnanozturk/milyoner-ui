@@ -1,5 +1,5 @@
 import {Container} from "@mui/material";
-import AdminLoginForm from "../../component/AdminLoginForm.jsx";
+import AdminLoginForm from "../../component/admin/AdminLoginForm.jsx";
 
 function AdminLoginPage() {
     return (
