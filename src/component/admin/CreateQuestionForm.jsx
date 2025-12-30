@@ -30,7 +30,7 @@ const MIN_TOTAL_ANSWERS = 4;
 const MIN_LEVEL = 1;
 const MAX_LEVEL = 10;
 
-export default function CreateAnswerForm() {
+export default function CreateQuestionForm() {
     const [questionText, setQuestionText] = useState("");
     const [answers, setAnswers] = useState(INITIAL_ANSWERS);
     const [isActive, setIsActive] = useState(true);

@@ -7,7 +7,7 @@ import AdminLoginPage from "./page/panel/AdminLoginPage.jsx";
 import AdminLayout from "./component/admin/AdminLayout.jsx";
 import AdminPanelLayout from "./page/panel/AdminPanelLayout.jsx";
 import QuestionPage from "./page/panel/QuestionPage.jsx";
-import AnswerPage from "./page/panel/AnswerPage.jsx";
+import AnswerPage from "./page/panel/QuestionOperationPage.jsx";
 
 
 const router = createBrowserRouter([
