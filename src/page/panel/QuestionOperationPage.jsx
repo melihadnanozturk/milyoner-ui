@@ -1,5 +1,5 @@
 import CreateQuestionForm from "../../component/admin/CreateQuestionForm.jsx";
 
-export default function AnswerPage() {
-    return (<CreateQuestionForm/>)
+export default function QuestionOperationPage() {
+    return <CreateQuestionForm />;
 }
