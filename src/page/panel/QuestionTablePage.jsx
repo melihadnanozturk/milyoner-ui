@@ -16,7 +16,7 @@ import {
 import {Search} from "@mui/icons-material";
 import {useNavigate} from "react-router";
 
-export default function QuestionPage() {
+export default function QuestionTablePage() {
 
     const {data: questions, isLoading} = useGetAllQuestionsQuery({});
     const navigate = useNavigate();

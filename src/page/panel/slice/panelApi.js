@@ -22,7 +22,7 @@ export const panelApi = createApi({
         }),
         getQuestionById: builder.query({
             query: (id) => ({
-                url: `panel/questions/${id}`,
+                url: `/questions/${id}`,
                 method: 'GET',
             }),
             providesTags: (result, error, id) =>

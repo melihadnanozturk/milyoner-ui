@@ -6,8 +6,9 @@ import ResultPage from "./page/gameplay/ResultPage.jsx";
 import AdminLoginPage from "./page/panel/AdminLoginPage.jsx";
 import AdminLayout from "./component/admin/AdminLayout.jsx";
 import AdminPanelLayout from "./page/panel/AdminPanelLayout.jsx";
-import QuestionPage from "./page/panel/QuestionPage.jsx";
+import QuestionTablePage from "./page/panel/QuestionTablePage.jsx";
 import AnswerPage from "./page/panel/QuestionOperationPage.jsx";
+import QuestionDetailPage from "./page/panel/QuestionDetailPage.jsx";
 
 
 const router = createBrowserRouter([
@@ -16,9 +17,10 @@ const router = createBrowserRouter([
     {path: "/result", element: <ResultPage/>},
     {
         path: "panel", element: <AdminLayout/>, children: [
-            {path: "admin", element: <AdminLoginPage/>},
+            {path: "login", element: <AdminLoginPage/>},
             {path: "", element: <AdminPanelLayout/>, children: [
-                    {path: "question", element: <QuestionPage/>},
+                    {path: "question", element: <QuestionTablePage/>},
+                    {path: "question/:questionId", element: <QuestionDetailPage/>},
                     {path: "answer", element: <AnswerPage/>},
                 ]
             }

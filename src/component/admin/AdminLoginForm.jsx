@@ -35,7 +35,7 @@ function AdminLoginForm() {
 
         try {
             const result = await dispatch(fetchAdminLogin(body)).unwrap();
-            if (result) navigate("/admin/panel");
+            if (result) navigate("/panel/question");
         } catch (error) {
             setSubmitError("Giriş başarısız. Lütfen bilgilerini kontrol edip tekrar dene.");
         }
