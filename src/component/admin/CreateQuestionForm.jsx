@@ -68,7 +68,7 @@ export default function CreateQuestionForm() {
             <Stack
                 spacing={{ xs: 2, sm: 3, md: 5 }}
                 sx={{
-                    minHeight: { xs: 'auto', md: 'calc(100vh - 150px)' },
+                    // minHeight: { xs: 'auto', md: 'calc(100vh - 150px)' }, // Removed fixed height
                     py: { xs: 1, sm: 2 },
                     width: '100%'
                 }}
@@ -98,13 +98,13 @@ export default function CreateQuestionForm() {
                     container
                     spacing={{ xs: 2, sm: 3 }}
                     sx={{
-                        height: { xs: 'auto', md: '100%' },
-                        overflow: 'hidden',
+                        // height: { xs: 'auto', md: '100%' }, // Removed fixed height
+                        // overflow: 'hidden', // Removed overflow hidden
                         alignItems: 'flex-start'
                     }}
                 >
                     {/* Sol Taraf - Soru Bilgileri */}
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} >
                         <Stack spacing={2} sx={{ height: '100%' }}>
                             <Typography
                                 variant="h6"
@@ -179,7 +179,7 @@ export default function CreateQuestionForm() {
                     </Grid>
 
                     {/* Sağ Taraf - Cevaplar */}
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} >
                         <Stack
                             spacing={2}
                             sx={{

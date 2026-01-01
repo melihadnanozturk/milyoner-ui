@@ -6,89 +6,73 @@ export default function AnswerList({ answers, minAnswers, onAnswerChange, onRemo
             spacing={2}
             sx={{
                 flex: 1,
-                maxHeight: { xs: '400px', md: 'none' },
-                overflow: 'auto',
-                pr: 1,
-                '&::-webkit-scrollbar': {
-                    width: '6px',
-                },
-                '&::-webkit-scrollbar-track': {
-                    backgroundColor: 'background.paper',
-                    borderRadius: '10px',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                    backgroundColor: 'primary.main',
-                    borderRadius: '10px',
-                    '&:hover': {
-                        backgroundColor: 'primary.dark',
-                    },
-                },
-                scrollbarWidth: 'thin',
-                scrollbarColor: '#00E676 #11221F',
+                width: '100%',
             }}
         >
-            {answers.map((answer, index) => (
-                <Stack
-                    key={index}
-                    direction={{ xs: 'column', sm: 'row' }}
-                    spacing={1}
-                    alignItems={{ xs: 'stretch', sm: 'center' }}
-                    sx={{
-                        p: { xs: 1.5, sm: 0 },
-                        backgroundColor: { xs: 'background.paper', sm: 'transparent' },
-                        borderRadius: { xs: 2, sm: 0 },
-                    }}
-                >
-                    <TextField
-                        label={`Cevap ${index + 1}`}
-                        value={answer.answerText}
-                        onChange={(e) => onAnswerChange(index, 'answerText', e.target.value)}
-                        fullWidth
-                        size="small"
-                    />
-
+            {
+                answers.map((answer, index) => (
                     <Stack
-                        direction="row"
+                        key={index}
+                        direction={{ xs: 'column', sm: 'row' }}
                         spacing={1}
-                        justifyContent="space-between"
+                        alignItems={{ xs: 'stretch', sm: 'center' }}
+                        sx={{
+                            p: { xs: 1.5, sm: 0 },
+                            backgroundColor: { xs: 'background.paper', sm: 'transparent' },
+                            borderRadius: { xs: 2, sm: 0 },
+                        }}
                     >
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={answer.isCorrect}
-                                    onChange={(e) => onAnswerChange(index, 'isCorrect', e.target.checked)}
-                                    sx={{
-                                        color: 'success.main',
-                                        '&.Mui-checked': {
-                                            color: 'success.main',
-                                        }
-                                    }}
-                                />
-                            }
-                            label="Doğru"
-                            sx={{
-                                minWidth: { xs: 'auto', sm: '100px' },
-                                m: 0
-                            }}
+                        <TextField
+                            label={`Cevap ${index + 1}`}
+                            value={answer.answerText}
+                            onChange={(e) => onAnswerChange(index, 'answerText', e.target.value)}
+                            fullWidth
+                            size="small"
                         />
 
-                        {answers.length > minAnswers && (
-                            <Button
-                                variant="outlined"
-                                color="error"
-                                size="small"
-                                onClick={() => onRemoveAnswer(index)}
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            justifyContent="space-between"
+                        >
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={answer.isCorrect}
+                                        onChange={(e) => onAnswerChange(index, 'isCorrect', e.target.checked)}
+                                        sx={{
+                                            color: 'success.main',
+                                            '&.Mui-checked': {
+                                                color: 'success.main',
+                                            }
+                                        }}
+                                    />
+                                }
+                                label="Doğru"
                                 sx={{
-                                    minWidth: { xs: '60px', sm: 'auto' },
-                                    px: { xs: 1, sm: 2 }
+                                    minWidth: { xs: 'auto', sm: '100px' },
+                                    m: 0
                                 }}
-                            >
-                                Sil
-                            </Button>
-                        )}
+                            />
+
+                            {answers.length > minAnswers && (
+                                <Button
+                                    variant="outlined"
+                                    color="error"
+                                    size="small"
+                                    onClick={() => onRemoveAnswer(index)}
+                                    sx={{
+                                        minWidth: { xs: '60px', sm: 'auto' },
+                                        px: { xs: 1, sm: 2 }
+                                    }}
+                                >
+                                    Sil
+                                </Button>
+                            )}
+                        </Stack>
                     </Stack>
-                </Stack>
-            ))}
-        </Stack>
+                ))
+            }
+        </Stack >
     );
 }

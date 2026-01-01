@@ -31,9 +31,9 @@ function AdminPanelLayout() {
 
     const menuItems = useMemo(
         () => [
-            {key: "question", label: "Sorular", to: "/admin/panel", icon: <QuizOutlinedIcon/>},
+            {key: "question", label: "Sorular", to: "/panel/question", icon: <QuizOutlinedIcon/>},
             //todo : nice to have // change icon :)
-            {key: "createAnswer", label: "Soru Oluştur", to: "/admin/panel/answer", icon: <CheckCircleOutlineIcon/>},
+            {key: "createAnswer", label: "Soru Oluştur", to: "/panel/answer", icon: <CheckCircleOutlineIcon/>},
         ],
         []
     );
@@ -47,7 +47,7 @@ function AdminPanelLayout() {
                     position: "fixed",
                     top: 0,
                     left: 0,
-                    height: "100vh",
+                    height: "180vh",
                     width: sidebarWidth,
                     borderRadius: 0,
                     overflow: "hidden",

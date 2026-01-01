@@ -2,18 +2,24 @@ import {useGetAllQuestionsQuery} from "./slice/panelApi.js";
 import {
     Box,
     Chip,
-    CircularProgress, Paper,
+    CircularProgress,
+    IconButton,
+    Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    Tooltip
 } from "@mui/material";
+import {Search} from "@mui/icons-material";
+import {useNavigate} from "react-router";
 
 export default function QuestionPage() {
 
     const {data: questions, isLoading} = useGetAllQuestionsQuery({});
+    const navigate = useNavigate();
 
     if (isLoading) {
         return (
@@ -24,11 +30,12 @@ export default function QuestionPage() {
     }
 
     return (
-        <Box sx={{ width: '100%'}}>
-            <TableContainer  component={Paper} sx={{
-                maxHeight: 'calc(100vh - 120px)',
-                width: '100%',
-                overflow: 'auto',
+        <Box sx={{width: '100%'}}>
+            <TableContainer component={Paper} sx={{
+                maxHeight: 'calc(100vh - 200px)',
+                minWidth: '800px',
+                overflowX: 'hidden',
+                overflowY: 'auto',
                 // Scrollbar Özelleştirme
                 '&::-webkit-scrollbar': {
                     width: '8px',
@@ -56,6 +63,7 @@ export default function QuestionPage() {
                             <TableCell sx={{fontWeight: 'bold'}}> Soru </TableCell>
                             <TableCell sx={{fontWeight: 'bold'}}> Aktiflik </TableCell>
                             <TableCell sx={{fontWeight: 'bold'}}> Level </TableCell>
+                            <TableCell sx={{fontWeight: 'bold'}}> Detay </TableCell>
                         </TableRow>
                     </TableHead>
 
@@ -63,7 +71,7 @@ export default function QuestionPage() {
                         {questions?.data?.map((row) => (
                             <TableRow key={row.id}
                                       hover>
-                                <TableCell> {row.questionText} </TableCell>
+                                <TableCell> {row.questionId} </TableCell>
                                 <TableCell> {row.questionText} </TableCell>
                                 <TableCell> <Chip
                                     label={row.isActivate ? "Aktif" : "Pasif"}
@@ -71,7 +79,23 @@ export default function QuestionPage() {
                                     variant="outlined"
                                     size="small"
                                 /> </TableCell>
-                                <TableCell> {row.questionLevel} </TableCell>
+                                <TableCell> <Chip
+                                    label={row.questionLevel}
+                                    color="warning"
+                                    variant="outlined"
+                                    size="small"
+                                />
+                                </TableCell>
+                                <TableCell>
+                                    <Tooltip title="Soru detayına git">
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() => navigate(`/panel/question/${row.questionId}`)}
+                                        >
+                                            <Search/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -79,4 +103,6 @@ export default function QuestionPage() {
             </TableContainer>
         </Box>
     )
+
+
 }

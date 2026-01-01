@@ -15,11 +15,10 @@ const router = createBrowserRouter([
     {path: "/game", element: <GamePage/>},
     {path: "/result", element: <ResultPage/>},
     {
-        path: "/admin", element: <AdminLayout/>, children: [
-            {index: true, element: <AdminLoginPage/>},
-            {
-                path: "panel", element: <AdminPanelLayout/>, children: [
-                    {index: true, element: <QuestionPage/>},
+        path: "panel", element: <AdminLayout/>, children: [
+            {path: "admin", element: <AdminLoginPage/>},
+            {path: "", element: <AdminPanelLayout/>, children: [
+                    {path: "question", element: <QuestionPage/>},
                     {path: "answer", element: <AnswerPage/>},
                 ]
             }
