@@ -36,7 +36,35 @@ export const panelApi = createApi({
             }),
             invalidatesTags: [{type: 'Questions', id: 'LIST'}]
         }),
+        updateQuestion: builder.mutation({
+            query: ({ questionId, ...body }) => ({
+                url: `/questions/operation/${questionId}`,
+                method: 'PUT',
+                data: body
+            }),
+            invalidatesTags: (result, error, { questionId }) => [
+                { type: 'Questions', id: questionId },
+                { type: 'Questions', id: 'LIST' }
+            ]
+        }),
+        updateAnswer: builder.mutation({
+            query: ({ answerId, questionId, ...body }) => ({
+                url: `/answers/operation/${answerId}`,
+                method: 'PUT',
+                data: body
+            }),
+            invalidatesTags: (result, error, { questionId }) => [
+                { type: 'Questions', id: questionId },
+                { type: 'Questions', id: 'LIST' }
+            ]
+        }),
     })
 })
 
-export const {useGetAllQuestionsQuery, useGetQuestionByIdQuery, useCreateNewQuestionMutation} = panelApi;
+export const {
+    useGetAllQuestionsQuery,
+    useGetQuestionByIdQuery,
+    useCreateNewQuestionMutation,
+    useUpdateQuestionMutation,
+    useUpdateAnswerMutation
+} = panelApi;
