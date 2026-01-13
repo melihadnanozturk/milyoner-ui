@@ -58,6 +58,16 @@ export const panelApi = createApi({
                 { type: 'Questions', id: 'LIST' }
             ]
         }),
+        deleteQuestion: builder.mutation({
+            query: (questionId) => ({
+                url: `/questions/operation/${questionId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: (result, error, questionId) => [
+                { type: 'Questions', id: questionId },
+                { type: 'Questions', id: 'LIST' }
+            ]
+        }),
     })
 })
 
@@ -66,5 +76,6 @@ export const {
     useGetQuestionByIdQuery,
     useCreateNewQuestionMutation,
     useUpdateQuestionMutation,
-    useUpdateAnswerMutation
+    useUpdateAnswerMutation,
+    useDeleteQuestionMutation
 } = panelApi;

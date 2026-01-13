@@ -2,7 +2,8 @@ import {useState, useEffect, useCallback} from "react";
 import {
     useGetQuestionByIdQuery,
     useUpdateQuestionMutation,
-    useUpdateAnswerMutation
+    useUpdateAnswerMutation,
+    useDeleteQuestionMutation
 } from "./slice/panelApi.js";
 import {
     Box,
@@ -28,15 +29,18 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import {Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon} from "@mui/icons-material";
-import {useParams} from "react-router";
+import {Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon, Delete as DeleteIcon} from "@mui/icons-material";
+import {useParams, useNavigate} from "react-router";
 import {QUESTION_CONSTANTS} from "../../component/admin/constants/questionConstants.js";
+import DeleteConfirmationDialog from "../../component/admin/DeleteConfirmationDialog.jsx";
 
 export default function QuestionDetailPage() {
     const {questionId} = useParams();
+    const navigate = useNavigate();
     const {data: question, isLoading} = useGetQuestionByIdQuery(questionId);
     const [updateQuestion, {isLoading: isUpdatingQuestion}] = useUpdateQuestionMutation();
     const [updateAnswer, {isLoading: isUpdatingAnswer}] = useUpdateAnswerMutation();
+    const [deleteQuestion, {isLoading: isDeleting}] = useDeleteQuestionMutation();
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [formData, setFormData] = useState({
@@ -47,6 +51,7 @@ export default function QuestionDetailPage() {
     });
     const [originalData, setOriginalData] = useState(null);
     const [snackbar, setSnackbar] = useState({open: false, message: '', severity: 'success'});
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     // Initialize form data when question is loaded
     useEffect(() => {
@@ -161,6 +166,38 @@ export default function QuestionDetailPage() {
         setSnackbar(prev => ({...prev, open: false}));
     }, []);
 
+    const handleDeleteClick = useCallback(() => {
+        setDeleteDialogOpen(true);
+    }, []);
+
+    const handleCloseDeleteDialog = useCallback(() => {
+        if (!isDeleting) {
+            setDeleteDialogOpen(false);
+        }
+    }, [isDeleting]);
+
+    const handleConfirmDelete = useCallback(async () => {
+        try {
+            await deleteQuestion(Number(questionId)).unwrap();
+            setSnackbar({
+                open: true,
+                message: 'Soru başarıyla silindi!',
+                severity: 'success'
+            });
+            setDeleteDialogOpen(false);
+            // Navigate to question list page after a short delay to show success message
+            setTimeout(() => {
+                navigate('/panel/question');
+            }, 500);
+        } catch (error) {
+            setSnackbar({
+                open: true,
+                message: error?.data?.message || error?.message || 'Silme işlemi sırasında bir hata oluştu!',
+                severity: 'error'
+            });
+        }
+    }, [questionId, deleteQuestion, navigate]);
+
     if (isLoading) {
         return (
             <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400}}>
@@ -189,15 +226,26 @@ export default function QuestionDetailPage() {
                         Soru Detayları
                     </Typography>
                     {!isEditMode ? (
-                        <Tooltip title="Düzenle">
-                            <IconButton
-                                color="primary"
-                                onClick={handleEditClick}
-                                disabled={isLoading}
-                            >
-                                <EditIcon/>
-                            </IconButton>
-                        </Tooltip>
+                        <Box sx={{display: 'flex', gap: 1}}>
+                            <Tooltip title="Düzenle">
+                                <IconButton
+                                    color="primary"
+                                    onClick={handleEditClick}
+                                    disabled={isLoading}
+                                >
+                                    <EditIcon/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Sil">
+                                <IconButton
+                                    color="error"
+                                    onClick={handleDeleteClick}
+                                    disabled={isLoading}
+                                >
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
                     ) : (
                         <Box sx={{display: 'flex', gap: 1}}>
                             <Tooltip title="Kaydet">
@@ -422,6 +470,16 @@ export default function QuestionDetailPage() {
                     {snackbar.message}
                 </Alert>
             </Snackbar>
+
+            <DeleteConfirmationDialog
+                open={deleteDialogOpen}
+                onClose={handleCloseDeleteDialog}
+                onConfirm={handleConfirmDelete}
+                dialogTitle="Soru Silme Onayı"
+                dialogContent="Bu soruyu silmek istediğinize emin misiniz?"
+                questionText={questionData?.questionText || ''}
+                isDeleting={isDeleting}
+            />
         </Box>
     )
 }
