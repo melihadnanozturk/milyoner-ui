@@ -7,6 +7,7 @@ import {
 } from "./slice/panelApi.js";
 import {
     Box,
+    Button,
     Checkbox,
     Chip,
     CircularProgress,
@@ -29,7 +30,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import {Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon, Delete as DeleteIcon} from "@mui/icons-material";
+import {Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon, Delete as DeleteIcon, ArrowBack as ArrowBackIcon} from "@mui/icons-material";
 import {useParams, useNavigate} from "react-router";
 import {QUESTION_CONSTANTS} from "../../component/admin/constants/questionConstants.js";
 import DeleteConfirmationDialog from "../../component/admin/DeleteConfirmationDialog.jsx";
@@ -166,6 +167,10 @@ export default function QuestionDetailPage() {
         setSnackbar(prev => ({...prev, open: false}));
     }, []);
 
+    const handleBack = useCallback(() => {
+        navigate(-1);
+    }, [navigate]);
+
     const handleDeleteClick = useCallback(() => {
         setDeleteDialogOpen(true);
     }, []);
@@ -218,13 +223,31 @@ export default function QuestionDetailPage() {
     const isSaving = isUpdatingQuestion || isUpdatingAnswer;
 
     return (
-        <Box sx={{width: '100%', padding: 3, display: 'flex', gap: 3, flexWrap: 'wrap'}}>
-            {/* Soru Detayları Formu */}
-            <Paper sx={{padding: 3, flex: 1, minWidth: '400px'}}>
-                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3}}>
-                    <Typography variant="h5" sx={{fontWeight: 'bold'}}>
-                        Soru Detayları
-                    </Typography>
+        <Box sx={{width: '100%', padding: 3, position: 'relative'}}>
+            {/* Geri Butonu - Sağ Üst */}
+            <Box sx={{
+                position: 'absolute',
+                top: 3,
+                right: 3,
+                marginBottom: '3px'
+            }}>
+                <Button
+                    variant="outlined"
+                    startIcon={<ArrowBackIcon/>}
+                    onClick={handleBack}
+                    disabled={isLoading}
+                >
+                    Geri dön
+                </Button>
+            </Box>
+
+            <Box sx={{display: 'flex', gap: 3, flexWrap: 'wrap', marginTop: '48px'}}>
+                {/* Soru Detayları Formu */}
+                <Paper sx={{padding: 3, flex: 1, minWidth: '400px'}}>
+                    <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3}}>
+                        <Typography variant="h5" sx={{fontWeight: 'bold'}}>
+                            Soru Detayları
+                        </Typography>
                     {!isEditMode ? (
                         <Box sx={{display: 'flex', gap: 1}}>
                             <Tooltip title="Düzenle">
@@ -455,6 +478,7 @@ export default function QuestionDetailPage() {
                     </Table>
                 </TableContainer>
             </Paper>
+            </Box>
 
             <Snackbar
                 open={snackbar.open}

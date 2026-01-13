@@ -19,6 +19,7 @@ import { useQuestionForm } from "./hooks/useQuestionForm.js";
 import { useQuestionValidation } from "./hooks/useQuestionValidation.js";
 import { QUESTION_CONSTANTS, VALIDATION_MESSAGES } from "./constants/questionConstants.js";
 import AnswerList from "./AnswerList.jsx";
+import { useNavigate } from "react-router";
 
 export default function CreateQuestionForm() {
     const { formData, formActions, constants } = useQuestionForm();
@@ -37,7 +38,7 @@ export default function CreateQuestionForm() {
     const [createQuestion, { isLoading }] = useCreateNewQuestionMutation();
 
     const validationResult = useQuestionValidation(questionText, answers, isActive, questionLevel);
-
+    const navigate = useNavigate();
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
 
@@ -58,6 +59,7 @@ export default function CreateQuestionForm() {
             resetForm();
             setError('');
             alert(VALIDATION_MESSAGES.SUCCESS);
+            navigate('/panel/question');
         } catch (err) {
             setError(err.message || VALIDATION_MESSAGES.SUBMIT_ERROR);
         }
