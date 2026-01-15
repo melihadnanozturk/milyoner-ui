@@ -9,20 +9,32 @@ import QuestionTablePage from "../page/panel/QuestionTablePage.jsx";
 import AnswerPage from "../page/panel/QuestionOperationPage.jsx";
 import QuestionDetailPage from "../page/panel/QuestionDetailPage.jsx";
 
-export const getAuthToken = () => {
+export const getAdminPanelAuthToken = () => {
     return localStorage.getItem("adminAccessToken");
 };
 
-export const checkAuthLoader = () => {
-    const token = getAuthToken();
+export const getGameplayAuthToken = () => {
+    return localStorage.getItem("accessToken");
+};
+
+export const adminPanelCheckAuthLoader = () => {
+    const token = getAdminPanelAuthToken();
     if (!token) {
         return redirect("/panel/login");
     }
     return token;
 };
 
-export const redirectIfAuthenticated = () => {
-    const token = getAuthToken();
+export const gameplayCheckAuthLoader = () => {
+    const token = getGameplayAuthToken();
+    if (!token) {
+        return redirect("/");
+    }
+    return token;
+};
+
+export const adminPanelRedirectIfAuthenticated = () => {
+    const token = getAdminPanelAuthToken();
     if (token) {
         return redirect("/panel/question");
     }
@@ -32,15 +44,15 @@ export const redirectIfAuthenticated = () => {
 export const createAppRouter = () => {
     return createBrowserRouter([
         {path: "/", element: <StartGamePage/>},
-        {path: "/game", element: <GamePage/>},
-        {path: "/result", element: <ResultPage/>},
+        {path: "/game", element: <GamePage/>, loader: gameplayCheckAuthLoader},
+        {path: "/result", element: <ResultPage/>, loader: gameplayCheckAuthLoader},
         {
             path: "panel", element: <AdminLayout/>, children: [
-                {path: "login", element: <AdminLoginPage/>, loader: redirectIfAuthenticated},
-                {path: "", element: <AdminPanelLayout/>, loader: checkAuthLoader, children: [
-                        {path: "question", element: <QuestionTablePage/>, loader: checkAuthLoader},
-                        {path: "question/:questionId", element: <QuestionDetailPage/>, loader: checkAuthLoader},
-                        {path: "answer", element: <AnswerPage/>, loader: checkAuthLoader},
+                {path: "login", element: <AdminLoginPage/>, loader: adminPanelRedirectIfAuthenticated},
+                {path: "", element: <AdminPanelLayout/>, loader: adminPanelCheckAuthLoader, children: [
+                        {path: "question", element: <QuestionTablePage/>, loader: adminPanelCheckAuthLoader},
+                        {path: "question/:questionId", element: <QuestionDetailPage/>, loader: adminPanelCheckAuthLoader},
+                        {path: "answer", element: <AnswerPage/>, loader: adminPanelCheckAuthLoader},
                     ]
                 }
             ]
