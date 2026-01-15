@@ -1,5 +1,3 @@
-//token ??
-
 import {createAsyncThunk, createSlice, isPending, isRejected} from "@reduxjs/toolkit";
 import request from "../../../api/apiClient.js";
 import {skipToken} from "@reduxjs/toolkit/query";

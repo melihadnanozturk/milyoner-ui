@@ -242,23 +242,23 @@ export default function QuestionDetailPage() {
             </Box>
 
             <Box sx={{display: 'flex', gap: 3, flexWrap: 'wrap', marginTop: '48px'}}>
-                {/* Soru Detayları Formu */}
-                <Paper sx={{padding: 3, flex: 1, minWidth: '400px'}}>
-                    <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3}}>
-                        <Typography variant="h5" sx={{fontWeight: 'bold'}}>
-                            Soru Detayları
-                        </Typography>
+            {/* Soru Detayları Formu */}
+            <Paper sx={{padding: 3, flex: 1, minWidth: '400px'}}>
+                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3}}>
+                    <Typography variant="h5" sx={{fontWeight: 'bold'}}>
+                        Soru Detayları
+                    </Typography>
                     {!isEditMode ? (
                         <Box sx={{display: 'flex', gap: 1}}>
-                            <Tooltip title="Düzenle">
-                                <IconButton
-                                    color="primary"
-                                    onClick={handleEditClick}
-                                    disabled={isLoading}
-                                >
-                                    <EditIcon/>
-                                </IconButton>
-                            </Tooltip>
+                        <Tooltip title="Düzenle">
+                            <IconButton
+                                color="primary"
+                                onClick={handleEditClick}
+                                disabled={isLoading}
+                            >
+                                <EditIcon/>
+                            </IconButton>
+                        </Tooltip>
                             <Tooltip title="Sil">
                                 <IconButton
                                     color="error"

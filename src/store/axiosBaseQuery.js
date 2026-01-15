@@ -1,30 +1,19 @@
 import axios from 'axios';
 
-/**
- * Custom base query for RTK Query using axios
- * Supports authentication, skipAuth option, and proper error handling
- * 
- * @param {Object} options - Configuration options
- * @param {string} options.baseUrl - Base URL for all requests
- * @returns {Function} Base query function for RTK Query
- */
+
 const axiosBaseQuery =
     ({ baseUrl } = { baseUrl: '' }) =>
         async ({ url, method, data, params, headers, skipAuth }, { getState }) => {
+            // Get token from localStorage (outside try block for use in catch)
+            const token = localStorage.getItem("adminAccessToken");
+            
             try {
-                // Get token from Redux state or localStorage
-                const state = getState?.();
-                const tokenFromState = state?.adminAuth?.token || state?.game?.token;
-                const tokenFromStorage = localStorage.getItem("adminAccessToken");
-                const token = tokenFromState || tokenFromStorage;
-
                 // Merge headers with defaults
                 const mergedHeaders = {
                     'Content-Type': 'application/json',
                     ...(headers ?? {}),
                 };
 
-                // Add Authorization header if token exists and skipAuth is not true
                 if (token && !skipAuth) {
                     mergedHeaders.Authorization = `Bearer ${token}`;
                 }
@@ -39,9 +28,27 @@ const axiosBaseQuery =
 
                 return { data: result.data };
             } catch (axiosError) {
-                // Enhanced error handling
+                const status = axiosError.response?.status;
+                
+                if ((status === 401 || status === 403) && token && !skipAuth) {
+                    if (baseUrl.includes('/panel') || url.includes('/panel')) {
+                        localStorage.removeItem("adminAccessToken");
+                        
+                        if (window.location.pathname !== '/panel/login') {
+                            window.location.replace('/panel/login');
+                            return { 
+                                error: { 
+                                    status: status,
+                                    data: 'Authentication required',
+                                    silent: true // Flag to indicate this error should not be displayed
+                                } 
+                            };
+                        }
+                    }
+                }
+
                 const error = {
-                    status: axiosError.response?.status,
+                    status: status,
                     data: axiosError.response?.data || axiosError.message,
                 };
 
