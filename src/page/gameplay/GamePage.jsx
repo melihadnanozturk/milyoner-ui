@@ -58,32 +58,59 @@ function GamePage() {
 
             </Box>
             <Box sx={{pb: 5}}>
-                <Grid container spacing={2}>
-                    {question?.answers.map((option) => (
-                        <Grid
-                            item
-                            xs={6}  // Mobilde 2 sütun
-                            key={option.id}
-                        >
-                            <Button
-                                variant="outlined"
-                                fullWidth
-                                size="large"
-                                disabled={selection && option.id !== selection?.id}
-                                onClick={() => setSelection(option)}
-                                sx={{
-                                    height: '100%',
-                                    minHeight: '60px',
-                                    textTransform: 'none',
-                                    display: 'flex',
-                                    justifyContent: 'flex-start',
-                                    px: 3,
-                                    fontSize: '1.1rem'
-                                }}
-                            >{option.text}
-                            </Button>
+                <Grid container spacing={10}>
+                    {/* Sol sütun - İlk 2 cevap alt alta */}
+                    <Grid item xs={6}>
+                        <Grid container spacing={3} direction="column">
+                            {question?.answers.slice(0, 2).map((option) => (
+                                <Grid item key={option.id}>
+                                    <Button
+                                        variant="outlined"
+                                        fullWidth
+                                        size="large"
+                                        disabled={selection && option.id !== selection?.id}
+                                        onClick={() => setSelection(option)}
+                                        sx={{
+                                            height: '100%',
+                                            minHeight: '60px',
+                                            textTransform: 'none',
+                                            display: 'flex',
+                                            justifyContent: 'flex-start',
+                                            px: 3,
+                                            fontSize: '1.1rem'
+                                        }}
+                                    >{option.text}
+                                    </Button>
+                                </Grid>
+                            ))}
                         </Grid>
-                    ))}
+                    </Grid>
+                    {/* Sağ sütun - Son 2 cevap alt alta */}
+                    <Grid item xs={6}>
+                        <Grid container spacing={3} direction="column">
+                            {question?.answers.slice(2, 4).map((option) => (
+                                <Grid item key={option.id}>
+                                    <Button
+                                        variant="outlined"
+                                        fullWidth
+                                        size="large"
+                                        disabled={selection && option.id !== selection?.id}
+                                        onClick={() => setSelection(option)}
+                                        sx={{
+                                            height: '100%',
+                                            minHeight: '60px',
+                                            textTransform: 'none',
+                                            display: 'flex',
+                                            justifyContent: 'flex-start',
+                                            px: 3,
+                                            fontSize: '1.1rem'
+                                        }}
+                                    >{option.text}
+                                    </Button>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Box>
 
