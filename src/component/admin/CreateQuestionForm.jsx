@@ -121,12 +121,19 @@ export default function CreateQuestionForm() {
                             <TextField
                                 label="Soru Metni"
                                 value={questionText}
-                                onChange={(e) => setQuestionText(e.target.value)}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (value.length <= 500) {
+                                        setQuestionText(value);
+                                    }
+                                }}
                                 multiline
                                 rows={{ xs: 4, sm: 6 }}
                                 fullWidth
                                 required
                                 disabled={isLoading}
+                                inputProps={{ maxLength: 500 }}
+                                helperText={`${questionText.length}/500 karakter`}
                             />
 
                             <FormControl fullWidth required>
