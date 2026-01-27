@@ -1,6 +1,6 @@
 import {Box, Container} from "@mui/material";
 import LoginForm from "../../component/LoginForm.jsx";
-import stageBg from "../../assets/Milyoner_Background.png";
+import stageBg from "../../assets/M_Start.png";
 
 function StartGamePage() {
     return (
