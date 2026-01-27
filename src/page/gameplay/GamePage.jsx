@@ -1,4 +1,4 @@
-import {Box, Button, Grid, Typography} from "@mui/material";
+import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchNextQuestion, fetchSetAnswer} from "./slices/GameSlice.js";
@@ -433,15 +433,78 @@ function GamePage() {
                     </Box>
                 </Box>
 
-                {/* Onay Butonları */}
-                {selection && (
-                    <Box
+                {/* Onay Butonları - Dialog Pop-up */}
+                <Dialog
+                    open={!!selection}
+                    onClose={() => setSelection(null)}
+                    maxWidth="sm"
+                    fullWidth
+                    PaperProps={{
+                        sx: {
+                            backgroundColor: 'rgba(30, 30, 30, 0.95)',
+                            border: '2px solid #D4AF37',
+                            borderRadius: 2,
+                            clipPath: 'polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%)',
+                        }
+                    }}
+                >
+                    <DialogTitle
                         sx={{
-                            display: 'flex',
-                            gap: 2,
-                            mt: 4,
-                            flexWrap: 'wrap',
+                            textAlign: 'center',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '1.5rem',
+                            pb: 2,
+                        }}
+                    >
+                        Cevabınızı Onaylıyor musunuz?
+                    </DialogTitle>
+                    <DialogContent>
+                        {selection && (
+                            <Box
+                                sx={{
+                                    backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                                    border: '1px solid #D4AF37',
+                                    borderRadius: 1,
+                                    padding: 2,
+                                    mb: 2,
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        color: '#FFD700',
+                                        fontWeight: 'bold',
+                                        fontSize: '1.1rem',
+                                        mb: 1,
+                                    }}
+                                >
+                                    Seçtiğiniz Cevap:
+                                </Typography>
+                                <Typography
+                                    sx={{
+                                        color: 'white',
+                                        fontSize: '1rem',
+                                    }}
+                                >
+                                    {selection.text}
+                                </Typography>
+                            </Box>
+                        )}
+                        <Typography
+                            sx={{
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                textAlign: 'center',
+                                fontSize: '0.95rem',
+                            }}
+                        >
+                            Bu cevabınızı onaylamak istediğinizden emin misiniz?
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions
+                        sx={{
+                            padding: 3,
                             justifyContent: 'center',
+                            gap: 2,
                         }}
                     >
                         <Button
@@ -451,8 +514,9 @@ function GamePage() {
                                 backgroundColor: '#D4AF37',
                                 color: 'black',
                                 fontWeight: 'bold',
-                                fontSize: '1.1rem',
-                                padding: '12px 32px',
+                                fontSize: '1rem',
+                                padding: '10px 28px',
+                                borderRadius: 1,
                                 '&:hover': {
                                     backgroundColor: '#B8941F',
                                 },
@@ -461,19 +525,26 @@ function GamePage() {
                             Son Kararım
                         </Button>
                         <Button
-                            variant="contained"
-                            color="error"
+                            variant="outlined"
                             onClick={() => setSelection(null)}
                             sx={{
+                                borderColor: '#D4AF37',
+                                color: '#D4AF37',
                                 fontWeight: 'bold',
-                                fontSize: '1.1rem',
-                                padding: '12px 32px',
+                                fontSize: '1rem',
+                                padding: '10px 28px',
+                                borderRadius: 1,
+                                '&:hover': {
+                                    borderColor: '#B8941F',
+                                    color: '#B8941F',
+                                    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                                },
                             }}
                         >
                             Biraz daha düşüneceğim
                         </Button>
-                    </Box>
-                )}
+                    </DialogActions>
+                </Dialog>
             </Box>
         </Box>
 
