@@ -9,7 +9,14 @@ services:
         - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:8080}
     container_name: milyoner-ui
     ports:
-      - "3000:80"
+      - "5173:80"
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+    networks:
+      - milyoner-network
+
+networks:
+  milyoner-network:
+    name: milyoner-shared-network
+    external: true
