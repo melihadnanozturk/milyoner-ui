@@ -20,8 +20,6 @@ function GamePage() {
     }, [dispatch]);
 
     const handleConfirmAnswer = async () => {
-        // todo : olsa ne olmasa ne ? ;
-        // if (!selection) return;
         const body = {
             questionId: question.questionId,
             answerId: selection.id,

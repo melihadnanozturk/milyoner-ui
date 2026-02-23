@@ -40,11 +40,15 @@ export const gameSlice = createSlice({
     name: 'game',
     initialState,
     extraReducers: (builder) => {
-        builder.addCase(fetchStartGame.fulfilled, (state, action) => {
-            state.token = action.payload.data.token;
-            localStorage.setItem("accessToken", action.payload.data.token);
-            state.gameState = action.payload.data.gameState;
-        }).addCase(fetchNextQuestion.fulfilled, (state, action) => {
+        builder
+            .addCase(fetchStartGame.fulfilled, (state, action) => {
+                const { token, gameState } = action.payload.data;
+                
+                state.token = token;
+                state.gameState = gameState;
+                localStorage.setItem("accessToken", token);
+            })
+            .addCase(fetchNextQuestion.fulfilled, (state, action) => {
             state.question = action.payload.data.question;
         }).addCase(fetchSetAnswer.fulfilled, (state, action) => {
             state.gameState = action.payload.gameState;

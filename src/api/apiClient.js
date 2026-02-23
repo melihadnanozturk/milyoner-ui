@@ -50,7 +50,7 @@ const methods = {
 
 // burada yer alan gameId ve playerId bilgileri token üzerinden gönderilecek !!
 const gameplay = {
-    startGame: (username) => methods.post("game/start", username),
+    startGame: (username) => methods.post("game/start", username, {skipAuth: true}),
     getQuestion: () => methods.post("game/questions"),
     setAnswer: (body) => methods.post("game/answer", body),
     getResult: () => methods.post("game/result"),

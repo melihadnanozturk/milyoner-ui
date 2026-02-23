@@ -17,7 +17,6 @@ function LoginForm() {
             username: data.username
         }
         try {
-            //burada hata olabilir
             await dispatch(fetchStartGame(body)).unwrap();
             navigate("/game");
         } catch (error) {
