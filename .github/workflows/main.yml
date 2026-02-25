@@ -50,6 +50,7 @@ jobs:
         image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
         flags: '--allow-unauthenticated' # Herkesin erişebilmesi için
 
-    # 5. URL'i Yazdır (Opsiyonel)
+   # 5. URL'i Yazdır (En güvenli yazım şekli budulur)
     - name: Show Output
-      run: echo "Uygulama yayında: ${{ steps.deploy.outputs.url }}"
+      run: |
+        echo "Uygulama yayında: ${{ steps.deploy.outputs.url }}"
