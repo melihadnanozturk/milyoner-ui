@@ -7,6 +7,7 @@ on:
 env:
   PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
   REGION: ${{ vars.GCP_REGION }}
+  DEPLOY_REGION: ${{vars.GCP_DEPLOY_REGION}}
   SERVICE_NAME: milyoner-ui
   GAR_REPO: maoco-repo
 
@@ -46,7 +47,7 @@ jobs:
       uses: 'google-github-actions/deploy-cloudrun@v2'
       with:
         service: ${{ env.SERVICE_NAME }}
-        region: ${{ env.REGION }}
+        region: ${{ env.DEPLOY_REGION }}
         image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
         flags: '--allow-unauthenticated' # Herkesin erişebilmesi için
 
