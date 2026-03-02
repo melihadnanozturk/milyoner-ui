@@ -3,6 +3,8 @@ import {
     useGetQuestionByIdQuery,
     useUpdateQuestionMutation,
     useUpdateAnswerMutation,
+    useCreateNewAnswerMutation,
+    useDeleteAnswerMutation,
     useDeleteQuestionMutation
 } from "./slice/panelApi.js";
 import {
@@ -41,6 +43,8 @@ export default function QuestionDetailPage() {
     const {data: question, isLoading} = useGetQuestionByIdQuery(questionId);
     const [updateQuestion, {isLoading: isUpdatingQuestion}] = useUpdateQuestionMutation();
     const [updateAnswer, {isLoading: isUpdatingAnswer}] = useUpdateAnswerMutation();
+    const [createNewAnswer, {isLoading: isCreatingAnswer}] = useCreateNewAnswerMutation();
+    const [deleteAnswer, {isLoading: isDeletingAnswer}] = useDeleteAnswerMutation();
     const [deleteQuestion, {isLoading: isDeleting}] = useDeleteQuestionMutation();
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -51,6 +55,7 @@ export default function QuestionDetailPage() {
         answers: []
     });
     const [originalData, setOriginalData] = useState(null);
+    const [deletedAnswers, setDeletedAnswers] = useState([]);
     const [snackbar, setSnackbar] = useState({open: false, message: '', severity: 'success'});
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -80,17 +85,20 @@ export default function QuestionDetailPage() {
                     isActive: answer.isActive ?? true
                 })) || []
             });
+            setDeletedAnswers([]);
         }
     }, [question?.data, isEditMode]);
 
     const handleEditClick = useCallback(() => {
         setIsEditMode(true);
+        setDeletedAnswers([]);
     }, []);
 
     const handleCancel = useCallback(() => {
         if (originalData) {
             setFormData({...originalData});
         }
+        setDeletedAnswers([]);
         setIsEditMode(false);
     }, [originalData]);
 
@@ -110,6 +118,32 @@ export default function QuestionDetailPage() {
         }));
     }, []);
 
+    const handleAddAnswer = useCallback(() => {
+        setFormData(prev => ({
+            ...prev,
+            answers: [
+                ...prev.answers,
+                {
+                    answerId: null,
+                    answerText: '',
+                    isCorrect: false,
+                    isActive: true
+                }
+            ]
+        }));
+    }, []);
+
+    const handleRemoveAnswer = useCallback((index, answerId) => {
+        setFormData(prev => ({
+            ...prev,
+            answers: prev.answers.filter((_, i) => i !== index)
+        }));
+
+        if (answerId) {
+            setDeletedAnswers(prev => [...prev, answerId]);
+        }
+    }, []);
+
     const handleSave = useCallback(async () => {
         try {
             // Update question
@@ -122,29 +156,58 @@ export default function QuestionDetailPage() {
 
             // Update modified answers
             if (originalData) {
-                const answerPromises = formData.answers.map(async (answer, index) => {
-                    const originalAnswer = originalData.answers[index];
-                    if (!originalAnswer) return;
+                const originalAnswersMap = new Map(
+                    (originalData.answers || []).map(a => [a.answerId, a])
+                );
+
+                const updateOrCreatePromises = formData.answers.map(async (answer) => {
+                    const trimmedText = answer.answerText?.trim() || '';
+
+                    // Yeni cevap (henüz ID yok)
+                    if (!answer.answerId) {
+                        if (!trimmedText) {
+                            return Promise.resolve();
+                        }
+
+                        return createNewAnswer({
+                            questionId: Number(questionId),
+                            answerText: trimmedText,
+                            isCorrect: answer.isCorrect,
+                            isActive: answer.isActive ?? true
+                        }).unwrap();
+                    }
+
+                    const originalAnswer = originalAnswersMap.get(answer.answerId);
+                    if (!originalAnswer) {
+                        return Promise.resolve();
+                    }
 
                     // Check if answer was modified
                     const isModified =
-                        answer.answerText !== originalAnswer.answerText ||
+                        trimmedText !== (originalAnswer.answerText || '').trim() ||
                         answer.isCorrect !== originalAnswer.isCorrect ||
-                        answer.isActive !== originalAnswer.isActive;
+                        (answer.isActive ?? true) !== (originalAnswer.isActive ?? true);
 
                     if (isModified) {
                         return updateAnswer({
                             answerId: answer.answerId,
                             questionId: Number(questionId),
-                            answerText: answer.answerText.trim(),
+                            answerText: trimmedText,
                             isCorrect: answer.isCorrect,
-                            isActive: answer.isActive
+                            isActive: answer.isActive ?? true
                         }).unwrap();
                     }
                     return Promise.resolve();
                 });
 
-                await Promise.all(answerPromises);
+                const deletePromises = deletedAnswers.map((answerId) =>
+                    deleteAnswer({
+                        answerId,
+                        questionId: Number(questionId)
+                    }).unwrap()
+                );
+
+                await Promise.all([...updateOrCreatePromises, ...deletePromises]);
             }
 
             setSnackbar({
@@ -154,6 +217,7 @@ export default function QuestionDetailPage() {
             });
             setIsEditMode(false);
             setOriginalData({...formData});
+            setDeletedAnswers([]);
         } catch (error) {
             setSnackbar({
                 open: true,
@@ -161,7 +225,7 @@ export default function QuestionDetailPage() {
                 severity: 'error'
             });
         }
-    }, [formData, originalData, questionId, updateQuestion, updateAnswer]);
+    }, [formData, originalData, questionId, updateQuestion, updateAnswer, createNewAnswer, deleteAnswer, deletedAnswers]);
 
     const handleCloseSnackbar = useCallback(() => {
         setSnackbar(prev => ({...prev, open: false}));
@@ -220,17 +284,21 @@ export default function QuestionDetailPage() {
     }
 
     const questionData = question.data;
-    const isSaving = isUpdatingQuestion || isUpdatingAnswer;
+    const isSaving = isUpdatingQuestion || isUpdatingAnswer || isCreatingAnswer || isDeletingAnswer;
 
     return (
-        <Box sx={{width: '100%', padding: 3, position: 'relative'}}>
-            {/* Geri Butonu - Sağ Üst */}
-            <Box sx={{
-                position: 'absolute',
-                top: 3,
-                right: 3,
-                marginBottom: '3px'
-            }}>
+        <Box sx={{width: '100%', padding: 3}}>
+            {/* Üst Bar: Geri Dön + Başlık ve Aksiyonlar */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 3,
+                    flexWrap: 'wrap',
+                    gap: 2,
+                }}
+            >
                 <Button
                     variant="outlined"
                     startIcon={<ArrowBackIcon/>}
@@ -239,63 +307,75 @@ export default function QuestionDetailPage() {
                 >
                     Geri dön
                 </Button>
-            </Box>
 
-            <Box sx={{display: 'flex', gap: 3, flexWrap: 'wrap', marginTop: '48px'}}>
-            {/* Soru Detayları Formu */}
-            <Paper sx={{padding: 3, flex: 1, minWidth: '400px'}}>
-                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3}}>
-                    <Typography variant="h5" sx={{fontWeight: 'bold'}}>
-                        Soru Detayları
-                    </Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        flexWrap: 'wrap',
+                        justifyContent: 'flex-end',
+                    }}
+                >
+                    
                     {!isEditMode ? (
                         <Box sx={{display: 'flex', gap: 1}}>
-                        <Tooltip title="Düzenle">
-                            <IconButton
+                            <Button
+                                variant="contained"
                                 color="primary"
+                                startIcon={<EditIcon />}
                                 onClick={handleEditClick}
                                 disabled={isLoading}
                             >
-                                <EditIcon/>
-                            </IconButton>
-                        </Tooltip>
-                            <Tooltip title="Sil">
-                                <IconButton
-                                    color="error"
-                                    onClick={handleDeleteClick}
-                                    disabled={isLoading}
-                                >
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </Tooltip>
+                                Düzenle
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                startIcon={<DeleteIcon />}
+                                onClick={handleDeleteClick}
+                                disabled={isLoading}
+                            >
+                                Sil
+                            </Button>
                         </Box>
                     ) : (
                         <Box sx={{display: 'flex', gap: 1}}>
-                            <Tooltip title="Kaydet">
-                                <IconButton
-                                    color="success"
-                                    onClick={handleSave}
-                                    disabled={isSaving}
-                                >
-                                    <SaveIcon/>
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="İptal">
-                                <IconButton
-                                    color="error"
-                                    onClick={handleCancel}
-                                    disabled={isSaving}
-                                >
-                                    <CancelIcon/>
-                                </IconButton>
-                            </Tooltip>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                startIcon={<SaveIcon />}
+                                onClick={handleSave}
+                                disabled={isSaving}
+                            >
+                                Kaydet
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                startIcon={<CancelIcon />}
+                                onClick={handleCancel}
+                                disabled={isSaving}
+                            >
+                                İptal
+                            </Button>
                         </Box>
                     )}
                 </Box>
+            </Box>
+
+            <Box sx={{display: 'flex', gap: 3, flexWrap: 'wrap'}}>
+            {/* Soru Detayları Formu */}
+            <Paper sx={{padding: 3, flex: 1, minWidth: '400px'}}>
 
                 <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
+                <Typography variant="h5" sx={{fontWeight: 'bold', mr: 1}}>
+                        Soru Detayları
+                    </Typography>
+
                     {isEditMode ? (
                         <>
+
                             <FormControl fullWidth required>
                                 <InputLabel id="question-level-label">Soru Seviyesi</InputLabel>
                                 <Select
@@ -372,9 +452,21 @@ export default function QuestionDetailPage() {
 
             {/* Cevaplar Tablosu */}
             <Paper sx={{padding: 3, flex: 1, minWidth: '400px'}}>
-                <Typography variant="h5" sx={{marginBottom: 3, fontWeight: 'bold'}}>
-                    Cevaplar
-                </Typography>
+                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3}}>
+                    <Typography variant="h5" sx={{fontWeight: 'bold'}}>
+                        Cevaplar
+                    </Typography>
+                    {isEditMode && (
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={handleAddAnswer}
+                            disabled={isSaving}
+                        >
+                            Yeni Cevap Ekle
+                        </Button>
+                    )}
+                </Box>
 
                 <TableContainer sx={{
                     maxHeight: '300px',
@@ -402,6 +494,9 @@ export default function QuestionDetailPage() {
                             <TableRow>
                                 <TableCell sx={{fontWeight: 'bold'}}>Doğru Cevap</TableCell>
                                 <TableCell sx={{fontWeight: 'bold'}}>Cevap Metni</TableCell>
+                                {isEditMode && (
+                                    <TableCell sx={{fontWeight: 'bold'}}>İşlemler</TableCell>
+                                )}
                             </TableRow>
                         </TableHead>
 
@@ -437,6 +532,17 @@ export default function QuestionDetailPage() {
                                                     disabled={isSaving}
                                                     required
                                                 />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Tooltip title="Cevabı Sil">
+                                                    <IconButton
+                                                        color="error"
+                                                        onClick={() => handleRemoveAnswer(index, answer.answerId)}
+                                                        disabled={isSaving}
+                                                    >
+                                                        <DeleteIcon/>
+                                                    </IconButton>
+                                                </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     ))

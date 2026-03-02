@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import {
     Alert,
+    Box,
     Button,
     Checkbox,
     FormControlLabel,
@@ -72,7 +73,9 @@ export default function CreateQuestionForm() {
                 sx={{
                     // minHeight: { xs: 'auto', md: 'calc(100vh - 150px)' }, // Removed fixed height
                     py: { xs: 1, sm: 2 },
-                    width: '100%'
+                    width: '100%',
+                    maxWidth: 1400,
+                    mx: 'auto',
                 }}
             >
                 <Typography
@@ -96,163 +99,172 @@ export default function CreateQuestionForm() {
                     </Alert>
                 )}
 
-                <Grid
-                    container
-                    spacing={{ xs: 2, sm: 3 }}
+                <Box
                     sx={{
-                        // height: { xs: 'auto', md: '100%' }, // Removed fixed height
-                        // overflow: 'hidden', // Removed overflow hidden
-                        alignItems: 'flex-start'
+                        width: '100%',
+                        maxWidth: 1100,
+                        mx: 'auto',
                     }}
                 >
-                    {/* Sol Taraf - Soru Bilgileri */}
-                    <Grid item xs={12} >
-                        <Stack spacing={2} sx={{ height: '100%' }}>
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    color: 'primary.main',
-                                    fontSize: { xs: '1rem', sm: '1.25rem' }
-                                }}
-                            >
-                                Soru Metni
-                            </Typography>
-
-                            <TextField
-                                label="Soru Metni"
-                                value={questionText}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    if (value.length <= 500) {
-                                        setQuestionText(value);
-                                    }
-                                }}
-                                multiline
-                                rows={{ xs: 4, sm: 6 }}
-                                fullWidth
-                                required
-                                disabled={isLoading}
-                                inputProps={{ maxLength: 500 }}
-                                helperText={`${questionText.length}/500 karakter`}
-                            />
-
-                            <FormControl fullWidth required>
-                                <InputLabel id="question-level-label">Soru Seviyesi</InputLabel>
-                                <Select
-                                    labelId="question-level-label"
-                                    id="question-level-select"
-                                    value={questionLevel}
-                                    label="Soru Seviyesi"
-                                    onChange={(e) => setQuestionLevel(e.target.value)}
-                                    disabled={isLoading}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: { xs: 'column', md: 'row' },
+                            gap: { xs: 3, sm: 4 },
+                            width: '100%',
+                        }}
+                    >
+                        {/* Sol Taraf - Soru Bilgileri */}
+                        <Box sx={{ flex: { xs: '1 1 auto', md: '0 0 40%' }, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+                            <Stack spacing={2} sx={{ flex: 1 }}>
+                                <Typography
+                                    variant="h6"
                                     sx={{
-                                        '& .MuiOutlinedInput-notchedOutline': {
-                                            borderColor: 'primary.main',
-                                        },
-                                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                                            borderColor: 'primary.main',
-                                        },
-                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                            borderColor: 'primary.main',
-                                        },
+                                        color: 'primary.main',
+                                        fontSize: { xs: '1.1rem', sm: '1.35rem' }
                                     }}
                                 >
-                                    {Array.from(
-                                        { length: QUESTION_CONSTANTS.MAX_LEVEL },
-                                        (_, i) => i + QUESTION_CONSTANTS.MIN_LEVEL
-                                    ).map((level) => (
-                                        <MenuItem key={level} value={level}>
-                                            Seviye {level}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                                    Soru Metni
+                                </Typography>
 
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={isActive}
-                                        onChange={(e) => setIsActive(e.target.checked)}
-                                        disabled={isLoading}
-                                        sx={{
-                                            color: 'primary.main',
-                                            '&.Mui-checked': {
-                                                color: 'primary.main',
-                                            }
-                                        }}
+                                <TextField
+                                    label="Soru Metni"
+                                    value={questionText}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value.length <= 500) {
+                                            setQuestionText(value);
+                                        }
+                                    }}
+                                    multiline
+                                    rows={6}
+                                    fullWidth
+                                    required
+                                    disabled={isLoading}
+                                    inputProps={{ maxLength: 500 }}
+                                    helperText={`${questionText.length}/500 karakter`}
+                                />
+
+                                <Box sx={{ mt: 'auto', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={isActive}
+                                                onChange={(e) => setIsActive(e.target.checked)}
+                                                disabled={isLoading}
+                                                sx={{
+                                                    color: 'primary.main',
+                                                    '&.Mui-checked': {
+                                                        color: 'primary.main',
+                                                    }
+                                                }}
+                                            />
+                                        }
+                                        label="Aktif Soru"
                                     />
-                                }
-                                label="Aktif Soru"
-                            />
-                        </Stack>
-                    </Grid>
 
-                    {/* Sağ Taraf - Cevaplar */}
-                    <Grid item xs={12} >
-                        <Stack
-                            spacing={2}
-                            sx={{
-                                height: '100%',
-                                overflow: 'hidden'
-                            }}
-                        >
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    color: 'primary.main',
-                                    fontSize: { xs: '1rem', sm: '1.25rem' }
-                                }}
-                            >
-                                Cevaplar (En az 3 yanlış, 1 doğru)
-                            </Typography>
 
-                            <AnswerList
-                                answers={answers}
-                                minAnswers={constants.MIN_ANSWERS}
-                                onAnswerChange={handleAnswerChange}
-                                onRemoveAnswer={handleRemoveAnswer}
-                            />
+                                    <FormControl fullWidth required>
+                                        <InputLabel id="question-level-label">Soru Seviyesi</InputLabel>
+                                        <Select
+                                            labelId="question-level-label"
+                                            id="question-level-select"
+                                            value={questionLevel}
+                                            label="Soru Seviyesi"
+                                            onChange={(e) => setQuestionLevel(e.target.value)}
+                                            disabled={isLoading}
+                                            sx={{
+                                                '& .MuiOutlinedInput-notchedOutline': {
+                                                    borderColor: 'primary.main',
+                                                },
+                                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                    borderColor: 'primary.main',
+                                                },
+                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                    borderColor: 'primary.main',
+                                                },
+                                            }}
+                                        >
+                                            {Array.from(
+                                                { length: QUESTION_CONSTANTS.MAX_LEVEL },
+                                                (_, i) => i + QUESTION_CONSTANTS.MIN_LEVEL
+                                            ).map((level) => (
+                                                <MenuItem key={level} value={level}>
+                                                    Seviye {level}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
 
-                            <Button
-                                variant="outlined"
-                                onClick={handleAddAnswer}
-                                fullWidth
-                                disabled={isLoading}
-                                sx={{
-                                    borderColor: 'primary.main',
-                                    color: 'primary.main',
-                                    py: { xs: 1, sm: 1.2 },
-                                    fontSize: { xs: '0.875rem', sm: '1rem' },
-                                    '&:hover': {
-                                        borderColor: 'primary.dark',
-                                        backgroundColor: 'primary.dark',
-                                        color: 'white'
-                                    }
-                                }}
-                            >
-                                Cevap Ekle
-                            </Button>
-                        </Stack>
-                    </Grid>
-                </Grid>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    fullWidth
-                    disabled={isLoading}
-                    sx={{
-                        backgroundColor: 'primary.main',
-                        color: 'black',
-                        fontWeight: 'bold',
-                        py: { xs: 1.2, sm: 1.5 },
-                        fontSize: { xs: '0.875rem', sm: '1rem' },
-                        '&:hover': {
-                            backgroundColor: 'primary.dark',
-                        }
-                    }}
-                >
-                    {isLoading ? 'Kaydediliyor...' : 'Kaydet'}
-                </Button>
+                                    
+                                </Box>
+                            </Stack>
+                        </Box>
+
+                        {/* Sağ Taraf - Cevaplar */}
+                        <Box sx={{ flex: { xs: '1 1 auto', md: '1 1 0%' }, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+                            <Stack spacing={2} sx={{ flex: 1 }}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        color: 'primary.main',
+                                        fontSize: { xs: '1.1rem', sm: '1.35rem' }
+                                    }}
+                                >
+                                    Cevaplar (En az 3 yanlış, 1 doğru)
+                                </Typography>
+
+                                <AnswerList
+                                    answers={answers}
+                                    minAnswers={constants.MIN_ANSWERS}
+                                    onAnswerChange={handleAnswerChange}
+                                    onRemoveAnswer={handleRemoveAnswer}
+                                />
+
+                                <Button
+                                    variant="outlined"
+                                    onClick={handleAddAnswer}
+                                    fullWidth
+                                    disabled={isLoading}
+                                    sx={{
+                                        mt: 'auto',
+                                        borderColor: 'primary.main',
+                                        color: 'primary.main',
+                                        py: { xs: 1, sm: 1.2 },
+                                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                                        '&:hover': {
+                                            borderColor: 'primary.dark',
+                                            backgroundColor: 'primary.dark',
+                                            color: 'white'
+                                        }
+                                    }}
+                                >
+                                    Cevap Ekle
+                                </Button>
+                            </Stack>
+                        </Box>
+                    </Box>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        fullWidth
+                        disabled={isLoading}
+                        sx={{
+                            backgroundColor: 'primary.main',
+                            color: 'black',
+                            fontWeight: 'bold',
+                            py: { xs: 1.2, sm: 1.5 },
+                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                            width: '100%',
+                            mt: { xs: 2, sm: 3 },
+                            '&:hover': {
+                                backgroundColor: 'primary.dark',
+                            }
+                        }}
+                    >
+                        {isLoading ? 'Kaydediliyor...' : 'Kaydet'}
+                    </Button>
+                </Box>
             </Stack>
         </Form>
     );
