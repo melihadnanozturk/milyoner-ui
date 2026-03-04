@@ -1,12 +1,17 @@
 import axios from 'axios';
 
+// Panel icin ayri axios instance - global interceptor'dan izole
+const panelAxios = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
+    withCredentials: true,
+});
 
 const axiosBaseQuery =
     ({ baseUrl } = { baseUrl: '' }) =>
         async ({ url, method, data, params, headers, skipAuth }, { getState }) => {
             // Get token from localStorage (outside try block for use in catch)
             const token = localStorage.getItem("adminAccessToken");
-            
+
             try {
                 // Merge headers with defaults
                 const mergedHeaders = {
@@ -18,7 +23,7 @@ const axiosBaseQuery =
                     mergedHeaders.Authorization = `Bearer ${token}`;
                 }
 
-                const result = await axios({
+                const result = await panelAxios({
                     url: baseUrl + url,
                     method,
                     data,
@@ -30,22 +35,22 @@ const axiosBaseQuery =
             } catch (axiosError) {
                 const status = axiosError.response?.status;
                 
-                if ((status === 401 || status === 403) && token && !skipAuth) {
-                    if (baseUrl.includes('/panel') || url.includes('/panel')) {
-                        localStorage.removeItem("adminAccessToken");
+                // if ((status === 401 || status === 403) && token && !skipAuth) {
+                //     if (baseUrl.includes('/panel') || url.includes('/panel')) {
+                //         localStorage.removeItem("adminAccessToken");
                         
-                        if (window.location.pathname !== '/panel/login') {
-                            window.location.replace('/panel/login');
-                            return { 
-                                error: { 
-                                    status: status,
-                                    data: 'Authentication required',
-                                    silent: true // Flag to indicate this error should not be displayed
-                                } 
-                            };
-                        }
-                    }
-                }
+                //         if (window.location.pathname !== '/panel/login') {
+                //             window.location.replace('/panel/login');
+                //             return { 
+                //                 error: { 
+                //                     status: status,
+                //                     data: 'Authentication required',
+                //                     silent: true // Flag to indicate this error should not be displayed
+                //                 } 
+                //             };
+                //         }
+                //     }
+                // }
 
                 const error = {
                     status: status,

@@ -1,7 +1,10 @@
 import axios from "axios";
 
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"
-axios.defaults.withCredentials = true;
+// Game icin ayri axios instance - panel interceptor'dan izole
+const gameAxios = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
+    withCredentials: true,
+});
 
 let injectedStore = null;
 
@@ -14,7 +17,7 @@ const isAuthExcluded = (config) => {
     if (config?.skipAuth === true) return true;
 }
 
-axios.interceptors.request.use(
+gameAxios.interceptors.request.use(
     (config) => {
         if (isAuthExcluded(config)) {
             if (config?.headers?.Authorization) {
@@ -23,12 +26,8 @@ axios.interceptors.request.use(
             return config;
         }
 
-
         const store = injectedStore.getState();
-        // TODO: token'ı hangi slice'ta tutuyorsan burayı değiştir
-        // örn: const token = state.auth?.token;
         const token = store.game?.token;
-
 
         if (token) {
             config.headers = config.headers ?? {};
@@ -42,10 +41,10 @@ axios.interceptors.request.use(
 
 
 const methods = {
-    get: (url) => axios.get(url).then((response) => response.data),
-    post: (url, body, config) => axios.post(url, body, config).then((response) => response.data),
-    put: (url, body) => axios.put(url, body).then((response) => response.data),
-    delete: (url) => axios.delete(url).then((response) => response.data),
+    get: (url) => gameAxios.get(url).then((response) => response.data),
+    post: (url, body, config) => gameAxios.post(url, body, config).then((response) => response.data),
+    put: (url, body) => gameAxios.put(url, body).then((response) => response.data),
+    delete: (url) => gameAxios.delete(url).then((response) => response.data),
 }
 
 // burada yer alan gameId ve playerId bilgileri token üzerinden gönderilecek !!
