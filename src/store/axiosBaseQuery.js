@@ -6,6 +6,20 @@ const panelAxios = axios.create({
     withCredentials: true,
 });
 
+panelAxios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401 || error.response?.status === 403) {
+            localStorage.removeItem("adminAccessToken");
+
+            if (window.location.pathname !== '/panel/login') {
+                window.location.replace('/panel/login');
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
 const axiosBaseQuery =
     ({ baseUrl } = { baseUrl: '' }) =>
         async ({ url, method, data, params, headers, skipAuth }, { getState }) => {
@@ -34,23 +48,6 @@ const axiosBaseQuery =
                 return { data: result.data };
             } catch (axiosError) {
                 const status = axiosError.response?.status;
-                
-                // if ((status === 401 || status === 403) && token && !skipAuth) {
-                //     if (baseUrl.includes('/panel') || url.includes('/panel')) {
-                //         localStorage.removeItem("adminAccessToken");
-                        
-                //         if (window.location.pathname !== '/panel/login') {
-                //             window.location.replace('/panel/login');
-                //             return { 
-                //                 error: { 
-                //                     status: status,
-                //                     data: 'Authentication required',
-                //                     silent: true // Flag to indicate this error should not be displayed
-                //                 } 
-                //             };
-                //         }
-                //     }
-                // }
 
                 const error = {
                     status: status,

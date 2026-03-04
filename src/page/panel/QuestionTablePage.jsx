@@ -1,5 +1,6 @@
 import {useGetAllQuestionsQuery} from "./slice/panelApi.js";
 import {
+    Alert,
     Box,
     Chip,
     CircularProgress,
@@ -18,13 +19,23 @@ import {useNavigate} from "react-router";
 
 export default function QuestionTablePage() {
 
-    const {data: questions, isLoading} = useGetAllQuestionsQuery({});
+    const {data: questions, isLoading, isError, error} = useGetAllQuestionsQuery({});
     const navigate = useNavigate();
 
     if (isLoading) {
         return (
             <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400, width: 400}}>
                 <CircularProgress/>
+            </Box>
+        );
+    }
+
+    if (isError) {
+        return (
+            <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400}}>
+                <Alert severity="error">
+                    {error?.message || 'Sorular yüklenirken bir hata oluştu.'}
+                </Alert>
             </Box>
         );
     }

@@ -17,9 +17,22 @@ export const getGameplayAuthToken = () => {
     return localStorage.getItem("accessToken");
 };
 
+const isTokenExpired = (token) => {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.exp * 1000 < Date.now();
+    } catch {
+        return true;
+    }
+};
+
 export const adminPanelCheckAuthLoader = () => {
     const token = getAdminPanelAuthToken();
     if (!token) {
+        return redirect("/panel/login");
+    }
+    if (isTokenExpired(token)) {
+        localStorage.removeItem("adminAccessToken");
         return redirect("/panel/login");
     }
     return token;
@@ -30,12 +43,20 @@ export const gameplayCheckAuthLoader = () => {
     if (!token) {
         return redirect("/");
     }
+    if (isTokenExpired(token)) {
+        localStorage.removeItem("accessToken");
+        return redirect("/");
+    }
     return token;
 };
 
 export const adminPanelRedirectIfAuthenticated = () => {
     const token = getAdminPanelAuthToken();
     if (token) {
+        if (isTokenExpired(token)) {
+            localStorage.removeItem("adminAccessToken");
+            return null;
+        }
         return redirect("/panel/question");
     }
     return null;

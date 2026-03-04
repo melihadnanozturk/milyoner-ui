@@ -40,7 +40,7 @@ import DeleteConfirmationDialog from "../../component/admin/DeleteConfirmationDi
 export default function QuestionDetailPage() {
     const {questionId} = useParams();
     const navigate = useNavigate();
-    const {data: question, isLoading} = useGetQuestionByIdQuery(questionId);
+    const {data: question, isLoading, isError, error} = useGetQuestionByIdQuery(questionId);
     const [updateQuestion, {isLoading: isUpdatingQuestion}] = useUpdateQuestionMutation();
     const [updateAnswer, {isLoading: isUpdatingAnswer}] = useUpdateAnswerMutation();
     const [createNewAnswer, {isLoading: isCreatingAnswer}] = useCreateNewAnswerMutation();
@@ -271,6 +271,16 @@ export default function QuestionDetailPage() {
         return (
             <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400}}>
                 <CircularProgress/>
+            </Box>
+        );
+    }
+
+    if (isError) {
+        return (
+            <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400}}>
+                <Alert severity="error">
+                    {error?.message || 'Soru detayları yüklenirken bir hata oluştu.'}
+                </Alert>
             </Box>
         );
     }
