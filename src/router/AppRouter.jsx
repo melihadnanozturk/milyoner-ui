@@ -33,7 +33,7 @@ export const adminPanelCheckAuthLoader = () => {
     }
     if (isTokenExpired(token)) {
         localStorage.removeItem("adminAccessToken");
-        return redirect("/panel/login");
+        return redirect("/panel/login?expired=true");
     }
     return token;
 };

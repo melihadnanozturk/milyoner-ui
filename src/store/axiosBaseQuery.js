@@ -13,7 +13,7 @@ panelAxios.interceptors.response.use(
             localStorage.removeItem("adminAccessToken");
 
             if (window.location.pathname !== '/panel/login') {
-                window.location.replace('/panel/login');
+                window.location.replace('/panel/login?expired=true');
             }
         }
         return Promise.reject(error);

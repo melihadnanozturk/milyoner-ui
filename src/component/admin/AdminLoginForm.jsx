@@ -14,7 +14,7 @@ import {
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
 import {fetchAdminLogin} from "../../page/panel/slice/AdminAuthSlice.js";
-import {useNavigate} from "react-router";
+import {useNavigate, useSearchParams} from "react-router";
 import {useState} from "react";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
@@ -22,6 +22,8 @@ import Visibility from "@mui/icons-material/Visibility";
 function AdminLoginForm() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const sessionExpired = searchParams.get("expired") === "true";
     const [submitError, setSubmitError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
 
@@ -35,7 +37,11 @@ function AdminLoginForm() {
 
         try {
             const result = await dispatch(fetchAdminLogin(body)).unwrap();
-            if (result) navigate("/panel/question");
+            if (result) {
+                searchParams.delete("expired");
+                setSearchParams(searchParams, {replace: true});
+                navigate("/panel/question");
+            }
         } catch (error) {
             setSubmitError("Giriş başarısız. Lütfen bilgilerini kontrol edip tekrar dene.");
         }
@@ -73,6 +79,12 @@ function AdminLoginForm() {
                                 Devam etmek için giriş yap.
                             </Typography>
                         </Box>
+
+                        {sessionExpired && (
+                            <Alert severity="warning">
+                                Oturumunuzun süresi dolmuştur. Lütfen tekrar giriş yapın.
+                            </Alert>
+                        )}
 
                         {submitError ? <Alert severity="error">{submitError}</Alert> : null}
 
